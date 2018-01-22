@@ -15,6 +15,7 @@ function teacherSignUp (firestore, uid, { school, teacher, displayName, name }) 
       .doc(teacher)
       .update({
         [`schools.${school}`]: 'teacher',
+        currentSchool: school,
         displayName,
         name
       })
