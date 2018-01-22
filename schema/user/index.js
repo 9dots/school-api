@@ -1,4 +1,5 @@
 const Schema = require('@weo-edu/schema')
+const validate = require('@weo-edu/validate')
 const {
   firebaseRef,
   displayName,
@@ -20,16 +21,21 @@ const name = Schema()
   .required(['given', 'family'])
 
 const gender = Schema('string').enum(['male', 'female', 'other'])
+const schools = Schema().prop(
+  /^.*$/,
+  Schema('string').enum(['teacher', 'student'])
+)
 
-module.exports = Schema()
+const User = Schema()
   .prop('displayName', displayName)
   .prop('avatarUrl', url)
   .prop('name', name)
   .prop('birthDate', date)
   .prop('ethnicity', ethnicity)
   .prop('gender', gender)
-  .prop('assignedLesson', assignedLesson)
-  .prop('teacherClasses', Schema('boolean'))
+  .prop('schools', schools)
+  // .prop('assignedLesson', assignedLesson)
+  .prop('splashPage', url)
   .required([
     'displayName',
     'avatarUrl',
@@ -38,3 +44,19 @@ module.exports = Schema()
     'ethnicity',
     'gender'
   ])
+
+const teacherSignUp = Schema()
+  .prop('displayName', displayName)
+  .prop('school', firebaseRef)
+  .prop('uid', firebaseRef)
+  .prop('name', name)
+  .required(['displayName', 'name', 'school', 'uid'])
+
+const setCurrentSchool = Schema()
+  .prop('school', firebaseRef)
+  .prop('uid', firebaseRef)
+  .required(['school', 'uid'])
+
+exports.default = User
+exports.teacherSignUp = validate(teacherSignUp)
+exports.setCurrentSchool = validate(setCurrentSchool)

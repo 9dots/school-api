@@ -1,25 +1,28 @@
 const Schema = require('@weo-edu/schema')
 
 const url = Schema('string').pattern(
-  /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/
+  /^(?:\w+:)?\/\/([^\s\.]+\.\S{2}|localhost[\:?\d]*)\S*$/,
+  'not_valid_url'
 )
 
 const firebaseRefObject = Schema()
   .prop(/^.*$/, { type: 'boolean' })
-  .others(false)
-const firebaseRef = Schema('string')
+  .others(false, 'invalid_keys')
+
+const firebaseRef = Schema('string').min(1, 'invalid_firebase_ref')
 
 const moduleObject = Schema()
   .prop('moduleRef', firebaseRef)
   // .prop('active', Schema('boolean'))
   .required(['moduleRef'])
+
 const moduleRefObject = Schema()
   .prop(/^.*$/, moduleObject)
-  .others(false)
+  .others(false, 'invalid_keys')
 
 const displayName = Schema('string')
-  .min(1)
-  .max(25)
+  .min(1, 'displayName_too_short')
+  .max(25, 'displayName_too_long')
 
 const description = Schema('string')
   .min(1)

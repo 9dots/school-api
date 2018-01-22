@@ -1,45 +1,66 @@
-const firebase = require('firebase')
+const { checkForDoc, checkForDocs } = require('./utils/checkForDoc')
+const admin = require('firebase-admin')
 
-require('firebase/firestore')
-const firestore = firebase.firestore()
-
-function createSchool (uid, schoolData) {
-  return firestore.collection('schools').add({
-    ...schoolData,
-    [`teachers.${uid}`]: true
-  })
-}
-
-function createClass (uid, schoolId, classData) {
-  return firestore.collection('classes').add({
-    ...classData,
-    owner: uid,
-    school: schoolId,
-    [`teachers.${uid}`]: true
-  })
-}
-
-function addTeacher (uid, schoolId) {
+/**
+ * create
+ * @param {Object} firestore - firestore instance
+ * @param {String} uid - firebase user id
+ * @param {Object} schoolData - Object of schoolData
+ * @param {String} schoolData.displayName - Display name of the school (required)
+ * @return {Promise} - Promise containing new document ID on success or error
+ */
+function create (firestore, uid, schoolData) {
   return firestore
     .collection('schools')
-    .doc(schoolId)
-    .update({
-      [`teachers.${uid}`]: true
+    .add({
+      ...schoolData,
+      teachers: {
+        [uid]: true
+      }
     })
+    .then(docSnap => ({ docId: docSnap.id }))
 }
 
-function removeTeacher (uid, schoolId) {
-  return firestore
-    .collection('schools')
-    .doc(schoolId)
-    .update({
-      [`teachers.${uid}`]: firebase.firestore.FieldValue.delete()
-    })
+function addTeacher (firestore, uid, { school, teacher }) {
+  console.log(teacher, school)
+  return checkForDocs(firestore, [
+    [`schools/${school}`, 'school'],
+    [
+      `users/${teacher}`,
+      'user',
+      snap => !snap.get(`schools.${school}`),
+      new Error('already_enrolled')
+    ]
+  ]).then(() =>
+    firestore
+      .collection('users')
+      .doc(teacher)
+      .update({
+        [`schools.${school}`]: 'teacher'
+      })
+      .catch(e => Promise.reject(new Error('school_not_found')))
+  )
+}
+
+function removeTeacher (firestore, uid, { teacher, school }) {
+  return checkForDoc(
+    firestore,
+    `users/${teacher}`,
+    'user',
+    snap => !!snap.get(`schools.${school}`),
+    new Error('not_enrolled')
+  ).then(() =>
+    firestore
+      .collection('schools')
+      .doc(school)
+      .update({
+        [`teachers.${uid}`]: admin.firestore.FieldValue.delete()
+      })
+  )
 }
 
 module.exports = {
   removeTeacher,
-  createSchool,
-  createClass,
-  addTeacher
+  addTeacher,
+  create
 }

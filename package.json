@@ -28,12 +28,21 @@
   },
   "dependencies": {
     "@f/foreach": "^1.2.2",
+    "@f/map": "^1.5.3",
     "@f/map-values": "^1.0.0",
+    "@f/set-prop": "^1.0.1",
+    "@google-cloud/firestore": "^0.10.1",
     "@weo-edu/schema": "^0.1.11",
+    "@weo-edu/validate": "^2.12.7",
+    "ajv-errors": "^1.0.0",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "dnode": "^1.2.2",
     "domready": "^1.0.8",
     "ecstatic": "^3.1.1",
+    "express": "^4.16.2",
     "firebase": "^4.8.0",
+    "firebase-admin": "^5.7.0",
     "shoe": "^0.0.15"
   }
 }

@@ -1,4 +1,5 @@
 const Schema = require('@weo-edu/schema')
+const validate = require('@weo-edu/validate')
 const {
   displayName,
   moduleRefObject,
@@ -25,7 +26,7 @@ const statsObject = Schema()
   .others(false)
 
 // XXX: Stats is a subcollection. Not sure how to document this yet.
-module.exports = Schema()
+const Class = Schema()
   .prop('displayName', displayName)
   .prop('grade', grade)
   .prop('school', firebaseRef)
@@ -36,3 +37,31 @@ module.exports = Schema()
   .prop('stats', statsObject)
   .others(false)
   .required(['displayName', 'grade', 'school', 'owner'])
+
+const createClass = Schema()
+  .prop('displayName', displayName)
+  .prop('grade', grade)
+  .prop('school', firebaseRef)
+  .prop('uid', firebaseRef)
+  .others(false, 'invalid_fields')
+  .required(['displayName', 'grade', 'school', 'uid'], 'missing_required_field')
+
+const addStudents = Schema()
+  .prop('class', firebaseRef)
+  .prop('school', firebaseRef)
+  .prop('uid', firebaseRef)
+  .prop('students', Schema('array').items(firebaseRef.schema))
+  .others(false, 'invalid_fields')
+  .required(['class', 'school', 'students', 'uid'], 'missing_required_field')
+
+const removeStudents = Schema()
+  .prop('class', firebaseRef)
+  .prop('uid', firebaseRef)
+  .prop('students', Schema('array').items(firebaseRef.schema))
+  .others(false, 'invalid_fields')
+  .required(['class', 'students', 'uid'], 'missing_required_field')
+
+exports.default = Class
+exports.createClass = validate(createClass)
+exports.addStudents = validate(addStudents)
+exports.removeStudents = validate(removeStudents)
