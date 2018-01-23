@@ -22,7 +22,6 @@ function create (firestore, uid, schoolData) {
 }
 
 function addTeacher (firestore, uid, { school, teacher }) {
-  console.log(teacher, school)
   return checkForDocs(firestore, [
     [`schools/${school}`, 'school'],
     [

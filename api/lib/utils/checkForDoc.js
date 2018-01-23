@@ -1,10 +1,8 @@
 function checkForDocs (firestore, paths) {
-  console.log('paths', paths)
   return Promise.all(paths.map(args => checkForDoc(firestore, ...args)))
 }
 
 function checkForDoc (firestore, path, name, cond, err) {
-  console.log(path, name)
   return firestore
     .doc(path)
     .get()

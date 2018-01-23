@@ -1,7 +1,7 @@
+const { checkForDoc, checkForDocs } = require('./utils/checkForDoc')
 const foreach = require('@f/foreach')
 const firebase = require('firebase')
 const uuidv1 = require('uuid/v1')
-const { checkForDoc, checkForDocs } = require('./utils/checkForDoc')
 
 require('firebase/firestore')
 

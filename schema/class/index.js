@@ -1,9 +1,9 @@
 const Schema = require('@weo-edu/schema')
 const validate = require('@weo-edu/validate')
 const {
-  displayName,
-  moduleRefObject,
   firebaseRefObject,
+  moduleRefObject,
+  displayName,
   firebaseRef,
   grade,
   uuid
