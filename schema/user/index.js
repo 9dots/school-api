@@ -52,11 +52,22 @@ const teacherSignUp = Schema()
   .prop('name', name)
   .required(['displayName', 'name', 'school', 'uid'])
 
+const createStudent = Schema()
+  .prop('studentId', firebaseRef)
+  .prop('school', firebaseRef)
+  .prop('uid', firebaseRef)
+  .prop('name', name)
+  .required(['studentId', 'name', 'school', 'uid'])
+
 const setCurrentSchool = Schema()
   .prop('school', firebaseRef)
   .prop('uid', firebaseRef)
   .required(['school', 'uid'])
 
+const setNav = Schema().prop('uid', firebaseRef)
+
 exports.default = User
-exports.teacherSignUp = validate(teacherSignUp)
 exports.setCurrentSchool = validate(setCurrentSchool)
+exports.teacherSignUp = validate(teacherSignUp)
+exports.createStudent = validate(createStudent)
+exports.setNav = validate(setNav)

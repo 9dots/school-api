@@ -72,18 +72,17 @@ function removeStudents (firestore, uid, { class: classId, students }) {
   )
 }
 
-function addStudents (firestore, uid, { class: classId, school, students }) {
+function addStudent (firestore, uid, { class: classId, student }) {
   return checkForDocs(firestore, [
-    [`schools/${school}`, 'school'],
     [`classes/${classId}`, 'class'],
-    ...students.map(ref => [`users/${ref}`, `user_${ref}`])
-  ]).then(() =>
-    firestore
-      .batch()
-      .update(firestore.doc(`/classes/${classId}`), ...studentsByRef(students))
-      .update(firestore.doc(`/schools/${school}`), ...studentsByRef(students))
-      .commit()
-  )
+    [`users/${student}`, 'student']
+  ])
+    .then(() =>
+      firestore.doc(`classes/${classId}`).update({
+        [`students.${student}`]: 'student'
+      })
+    )
+    .catch(e => Promise.reject(e))
 }
 
 function createClass (firestore, uid, { school, ...classData }) {
@@ -98,13 +97,7 @@ function createClass (firestore, uid, { school, ...classData }) {
         }
       })
     )
-    .then(ref => ref.id)
-    .then(id =>
-      firestore
-        .doc(`schools/${school}`)
-        .update({ [`classes.${id}`]: true })
-        .then(() => ({ id }))
-    )
+    .then(ref => ({ class: ref.id }))
 }
 
 /**
@@ -119,7 +112,7 @@ module.exports = {
   // removeTeacher,
   // assignLesson,
   removeStudents,
-  addStudents,
+  addStudent,
   createClass
   // addTeacher,
   // addCourse
