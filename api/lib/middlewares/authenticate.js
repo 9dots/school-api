@@ -7,7 +7,7 @@ const cert = {
   privateKey: process.env.SECRET_KEY
 }
 
-console.log(process.env.SECRET_KEY)
+console.log(cert, process.env.SECRET_KEY)
 
 const adminApp = admin.initializeApp({
   credential: admin.credential.cert(cert)
