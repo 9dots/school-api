@@ -4,7 +4,7 @@ const admin = require('firebase-admin')
 const cert = {
   projectId: process.env.PROJECT_ID,
   clientEmail: process.env.CLIENT_EMAIL,
-  privateKey: process.env.PRIVATE_KEY
+  privateKey: process.env.SECRET_KEY
 }
 
 console.log(cert)
