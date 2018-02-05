@@ -18,7 +18,7 @@ function getSchema (methodFamily, name) {
 
 function validate (validator, data) {
   return new Promise((resolve, reject) => {
-    const { valid, errors } = validator(data)
+    const { valid, errors } = validator(data, { greedy: true })
     if (!valid) {
       return reject(errors)
     }

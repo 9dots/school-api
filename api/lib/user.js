@@ -2,20 +2,12 @@ const { checkForDoc, checkForDocs } = require('./utils/checkForDoc')
 const admin = require('firebase-admin')
 
 function teacherSignUp (firestore, uid, { school, teacher, displayName, name }) {
-  return checkForDocs(firestore, [
-    [`schools/${school}`, 'school'],
-    [
-      `users/${teacher}`,
-      'user',
-      snap => !snap.get(`schools.${school}`),
-      new Error('already_enrolled')
-    ]
-  ]).then(() =>
+  return checkForDocs(firestore, [[`schools/${school}`, 'school']]).then(() =>
     firestore
       .collection('users')
       .doc(teacher)
       .update({
-        [`schools.${school}`]: true,
+        [`schools.${school}`]: 'teacher',
         'nav.school': school,
         displayName,
         name
@@ -23,7 +15,19 @@ function teacherSignUp (firestore, uid, { school, teacher, displayName, name }) 
   )
 }
 
-function createStudent (firestore, uid, { school, studentId, name }) {
+function addToSchool (firestore, uid, { school, user, role }) {
+  return checkForDoc(firestore, `schools/${school}`, 'school').then(() =>
+    firestore
+      .collection('users')
+      .doc(user)
+      .update({
+        [`schools.${school}`]: role,
+        'nav.school': school
+      })
+  )
+}
+
+function createStudent (firestore, uid, { school, studentId, name, email }) {
   const displayName = `${name.given} ${name.family}`
   return checkForStudentId(firestore, studentId).then(() =>
     admin
@@ -37,10 +41,12 @@ function createStudent (firestore, uid, { school, studentId, name }) {
           .collection('users')
           .doc(student)
           .set({
-            studentId,
+            schools: { [school]: 'student' },
+            'nav.school': school,
+            email: email || null,
             displayName,
-            name,
-            schools: { [school]: 'student' }
+            studentId,
+            name
           })
           .then(snap => ({ student }))
       )
@@ -67,40 +73,9 @@ function checkForStudentId (firestore, studentId) {
     )
 }
 
-function setCurrentSchool (firestore, uid, { school }) {
-  return checkForDoc(
-    firestore,
-    `users/${uid}`,
-    'user',
-    snap => !!snap.get(`schools.${school}`),
-    new Error('not_enrolled')
-  ).then(() =>
-    firestore
-      .collection('users')
-      .doc(uid)
-      .update({ currentSchool: school })
-  )
-}
-
-function setCurrentClass (firestore, uid, { school }) {
-  return checkForDoc(
-    firestore,
-    `users/${uid}`,
-    'user',
-    snap => !!snap.get(`schools.${school}`),
-    new Error('not_enrolled')
-  ).then(() =>
-    firestore
-      .collection('users')
-      .doc(uid)
-      .update({ currentSchool: school })
-  )
-}
-
 module.exports = {
-  setCurrentSchool,
-  setCurrentClass,
   teacherSignUp,
   createStudent,
+  addToSchool,
   setNav
 }

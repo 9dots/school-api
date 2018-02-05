@@ -20,6 +20,8 @@ const moduleRefObject = Schema()
   .prop(/^.*$/, moduleObject)
   .others(false, 'invalid_keys')
 
+const email = Schema('string').format('email', 'Invalid email address')
+
 const displayName = Schema('string')
   .min(1, 'displayName_too_short')
   .max(25, 'displayName_too_long')
@@ -73,6 +75,7 @@ module.exports = {
   description,
   ethnicity,
   lesson,
+  email,
   grade,
   uuid,
   date,

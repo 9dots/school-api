@@ -6,6 +6,7 @@ const {
   ethnicity,
   moduleId,
   lesson,
+  email,
   date,
   url
 } = require('../utils')
@@ -55,6 +56,7 @@ const teacherSignUp = Schema()
 const createStudent = Schema()
   .prop('studentId', firebaseRef)
   .prop('school', firebaseRef)
+  .prop('email', email)
   .prop('uid', firebaseRef)
   .prop('name', name)
   .required(['studentId', 'name', 'school', 'uid'])
@@ -64,10 +66,18 @@ const setCurrentSchool = Schema()
   .prop('uid', firebaseRef)
   .required(['school', 'uid'])
 
+const addToSchool = Schema()
+  .prop('school', firebaseRef)
+  .prop('uid', firebaseRef)
+  .prop('user', firebaseRef)
+  .prop('role', Schema('string').enum(['teacher', 'student']))
+  .required(['school', 'uid'])
+
 const setNav = Schema().prop('uid', firebaseRef)
 
 exports.default = User
 exports.setCurrentSchool = validate(setCurrentSchool)
 exports.teacherSignUp = validate(teacherSignUp)
 exports.createStudent = validate(createStudent)
+exports.addToSchool = validate(addToSchool)
 exports.setNav = validate(setNav)

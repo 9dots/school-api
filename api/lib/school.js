@@ -18,7 +18,7 @@ function create (firestore, uid, schoolData) {
         [uid]: true
       }
     })
-    .then(docSnap => ({ docId: docSnap.id }))
+    .then(docSnap => ({ school: docSnap.id }))
 }
 
 function addTeacher (firestore, uid, { school, teacher }) {

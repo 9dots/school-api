@@ -1,6 +1,6 @@
 const { checkForDoc, checkForDocs } = require('./utils/checkForDoc')
+const firebase = require('firebase-admin')
 const foreach = require('@f/foreach')
-const firebase = require('firebase')
 const uuidv1 = require('uuid/v1')
 
 require('firebase/firestore')
@@ -60,16 +60,17 @@ require('firebase/firestore')
 //   })
 // }
 
-function removeStudents (firestore, uid, { class: classId, students }) {
+function removeStudent (firestore, uid, { class: classId, student }) {
   return checkForDocs(firestore, [
     [`classes/${classId}`, 'class'],
-    ...students.map(ref => [`users/${ref}`, `user_${ref}`])
-  ]).then(() =>
-    firestore
-      .batch()
-      .update(firestore.doc(`/classes/${classId}`), ...studentsByRef(students))
-      .commit()
-  )
+    [`users/${student}`, 'student']
+  ])
+    .then(() => {
+      return firestore.doc(`classes/${classId}`).update({
+        [`students.${student}`]: firebase.firestore.FieldValue.delete()
+      })
+    })
+    .catch(e => Promise.reject(e, console.log(e)))
 }
 
 function addStudent (firestore, uid, { class: classId, student }) {
@@ -100,20 +101,12 @@ function createClass (firestore, uid, { school, ...classData }) {
     .then(ref => ({ class: ref.id }))
 }
 
-/**
- * utils
- */
-
-function studentsByRef (students, val = true) {
-  return students.map(ref => ({ [`students.${ref}`]: val }))
-}
-
 module.exports = {
   // removeTeacher,
   // assignLesson,
-  removeStudents,
-  addStudent,
-  createClass
+  removeStudent,
+  createClass,
+  addStudent
   // addTeacher,
   // addCourse
 }
