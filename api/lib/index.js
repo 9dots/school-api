@@ -1,26 +1,26 @@
 'use strict'
 
-const authenticate = require('./middlewares/authenticate')
+const authenticate = require('./middlewares/authenticate').default
 const checkMethod = require('./middlewares/checkMethod')
-const validateData = require('./middlewares/validate')
+const validate = require('./middlewares/validate')
 const bodyParser = require('body-parser')
-const app = require('express')()
+const express = require('express')
 const cors = require('cors')()
 
-app.use(cors)
-app.use(bodyParser.json())
+const app = express()
 
-app.post(
-  '/api/:method',
-  authenticate,
-  checkMethod,
-  validateData,
-  (req, res) => {
-    return req
-      .method(req.firestore, req.uid, req.body)
-      .then((val = {}) => res.send({ ok: true, ...val }))
-      .catch(e => res.send({ ok: false, error: e.message, errorDetails: e }))
+app.use(bodyParser.json())
+app.use(cors)
+app.use('/api', authenticate)
+app.use('/api/:method', checkMethod)
+app.post('/api/:method', validate, async (req, res) => {
+  const { action, body, uid } = req
+  try {
+    const val = await action(body, uid)
+    res.send({ ok: true, ...(val || {}) })
+  } catch (e) {
+    res.send({ ok: false, error: e })
   }
-)
+})
 
 app.listen(process.env.PORT || 8000)
