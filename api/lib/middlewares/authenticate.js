@@ -1,11 +1,13 @@
 const admin = require('firebase-admin')
-const serviceAccount = require('../../../secret.json')
+const cert = getServiceAccount()
 
 const adminApp = admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(cert)
 })
 
-module.exports = (req, res, next) => {
+exports.firestore = admin.firestore()
+
+exports.default = (req, res, next) => {
   if (
     !req.headers.authorization ||
     !req.headers.authorization.startsWith('Bearer ')
@@ -18,10 +20,10 @@ module.exports = (req, res, next) => {
     .then(() => adminApp.auth().verifyIdToken(idToken))
     .then(decodedIdToken => {
       req.uid = decodedIdToken.uid
-      req.firestore = admin
+      exports.firestore = admin
         .initializeApp(
           {
-            credential: admin.credential.cert(serviceAccount),
+            credential: admin.credential.cert(cert),
             databaseAuthVariableOverride: {
               uid: req.uid
             }
@@ -40,4 +42,16 @@ function maybeDeleteApp () {
   return admin.apps.findIndex(app => app.name === 'user') > -1
     ? admin.app('user').delete()
     : Promise.resolve()
+}
+
+function getServiceAccount () {
+  try {
+    return require('../../../secret.json')
+  } catch (e) {
+    return {
+      projectId: process.env.PROJECT_ID,
+      clientEmail: process.env.CLIENT_EMAIL,
+      privateKey: process.env.SECRET_KEY.replace(/\\n/g, '\n')
+    }
+  }
 }

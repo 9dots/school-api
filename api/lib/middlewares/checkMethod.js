@@ -1,32 +1,17 @@
+const schema = require('school-schema')
+
 module.exports = (req, res, next) => {
-  return methodFamilyCheck(req.params.method.split('.'))
-    .then(method => {
-      req.method = method
-      req.methodFamily = req.params.method.split('.')[0]
-      next()
-    })
-    .catch(e => res.send({ ok: false, error: e.message }))
-}
-
-function methodFamilyCheck ([methodFamilyName, method]) {
-  return getMethodFamily(methodFamilyName).then(methodFamily =>
-    getMethod(method, methodFamily)
-  )
-}
-
-function getMethodFamily (name) {
-  return new Promise((resolve, reject) => {
-    try {
-      resolve(require(`../${name}`))
-    } catch (e) {
-      console.error(e)
-      reject(new Error('method_family_not_found'))
+  const [methodFamily, method] = req.params.method.split('.')
+  try {
+    req.methodFamily = methodFamily
+    req.methodName = method
+    req.validator = schema[methodFamily][method]
+    req.action = require(`../${methodFamily}`)[method]
+    if (!req.action) {
+      throw new Error('method_not_found')
     }
-  })
-}
-
-function getMethod (name, api) {
-  return new Promise((resolve, reject) => {
-    api[name] ? resolve(api[name]) : reject(new Error('method_not_found'))
-  })
+    next()
+  } catch (e) {
+    res.send({ ok: false, error: 'method_not_found' })
+  }
 }
