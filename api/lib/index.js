@@ -11,15 +11,14 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors)
-app.use('/api', authenticate)
-app.use('/api/:method', checkMethod)
-app.post('/api/:method', validate, async (req, res) => {
+app.use('/api/:method', authenticate, checkMethod, validate)
+app.post('/api/:method', async (req, res) => {
   const { action, body, uid } = req
   try {
     const val = await action(body, uid)
     res.send({ ok: true, ...(val || {}) })
   } catch (e) {
-    res.send({ ok: false, error: e })
+    res.send({ ok: false, error: e.message })
   }
 })
 
