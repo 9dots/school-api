@@ -9,7 +9,7 @@ exports.removeUser = (id, user, role) =>
   classesRef.doc(id).update({
     [`${role}s.${user}`]: firebase.firestore.FieldValue.delete()
   })
-exports.create = data =>
+exports.create = (data, me) =>
   classesRef
-    .add({ ...data, teachers: { [data.teachers]: true } })
+    .add({ ...data, teachers: { [me]: true } })
     .then(ref => ({ class: ref.id }))
