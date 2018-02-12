@@ -8,6 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "start": "node api/lib/index.js",
     "test-schema": "tape schema/**/test.js"
   },
   "devDependencies": {
