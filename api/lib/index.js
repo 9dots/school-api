@@ -11,7 +11,8 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors)
-app.use('/api/:method', authenticate, checkMethod, validate)
+app.use(authenticate)
+app.use('/api/:method', checkMethod, validate)
 app.post('/api/:method', async (req, res) => {
   const { action, body, uid } = req
   try {
