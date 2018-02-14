@@ -1,22 +1,16 @@
 const Class = require('./model')
-const Module = require('../module')
+const Course = require('../course')
 
 exports.removeStudent = ({ class: cls, student: user }) =>
   Class.removeUser(cls, user, 'student')
 exports.addStudent = ({ class: cls, student: user }) =>
   Class.addUser(cls, user, 'student')
-exports.addCourse = async ({ class: cls, module: course }) => {
+exports.addCourse = async ({ class: cls, module: mod }) => {
   try {
-    const [mod] = await Promise.all([
-      Module.get(course),
-      Module.incrementAssigns(course)
-    ])
-    const copiedCourse = {
-      ...mod,
-      forkedFrom: { course: course, version: mod.version || 0 }
-    }
+    const { course } = await Course.createCopy({ module: mod, class: cls })
     return Class.update(cls, {
-      [`courses.${course}`]: copiedCourse
+      [`courses.${course}.active`]: false,
+      [`courses.${course}.course`]: course
     })
   } catch (e) {
     return Promise.reject(e)
