@@ -16,22 +16,25 @@ exports.default = (req, res, next) => {
     return
   }
   const idToken = req.headers.authorization.split('Bearer ')[1]
-  maybeDeleteApp()
-    .then(() => adminApp.auth().verifyIdToken(idToken))
+  adminApp
+    .auth()
+    .verifyIdToken(idToken)
     .then(decodedIdToken => {
-      req.uid = decodedIdToken.uid
-      exports.firestore = admin
-        .initializeApp(
-          {
-            credential: admin.credential.cert(cert),
-            databaseAuthVariableOverride: {
-              uid: req.uid
-            }
-          },
-          'user'
-        )
-        .firestore()
-      next()
+      maybeDeleteApp().then(() => {
+        req.uid = decodedIdToken.uid
+        exports.firestore = admin
+          .initializeApp(
+            {
+              credential: admin.credential.cert(cert),
+              databaseAuthVariableOverride: {
+                uid: req.uid
+              }
+            },
+            'user'
+          )
+          .firestore()
+        next()
+      })
     })
     .catch(error => {
       return res.status(403).send({ ok: false, error: error.message })

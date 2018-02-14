@@ -2,13 +2,11 @@ const { firestore } = require('../middlewares/authenticate')
 
 const moduleRef = firestore.collection('modules')
 
-exports.get = id => {
-  console.log(id, moduleRef)
-  return moduleRef
+exports.get = id =>
+  moduleRef
     .doc(id)
     .get()
     .then(snap => snap.data())
-}
 exports.incrementAssigns = id => incrementAssigns(id, moduleRef, firestore)
 
 function incrementAssigns (id, moduleRef) {

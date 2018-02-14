@@ -3,6 +3,7 @@ const { firestore } = require('../middlewares/authenticate')
 
 const classesRef = firestore.collection('classes')
 
+exports.update = (id, data) => classesRef.doc(id).update(data)
 exports.addUser = (id, user, role) =>
   classesRef.doc(id).update({ [`${role}s.${user}`]: true })
 exports.removeUser = (id, user, role) =>
@@ -13,3 +14,8 @@ exports.create = (data, me) =>
   classesRef
     .add({ ...data, teachers: { [me]: true } })
     .then(ref => ({ class: ref.id }))
+exports.addToSubcollection = (id, field, data) =>
+  classesRef
+    .doc(id)
+    .collection(field)
+    .add(data)
