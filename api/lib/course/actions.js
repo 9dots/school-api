@@ -3,7 +3,7 @@ const Module = require('../module')
 
 exports.create = Course.create
 exports.get = Course.get
-exports.createFromModule = async ({ module: mod, class: cls }) => {
+exports.createCopy = async ({ module: mod, class: cls }) => {
   try {
     await Module.incrementAssigns(mod)
     const course = await Module.get(mod)
@@ -20,7 +20,7 @@ function getCourseData (course, mod, cls) {
     class: cls,
     module: {
       ref: mod,
-      version: course.version
+      version: course.version || 0
     }
   }
 }
