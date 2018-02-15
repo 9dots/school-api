@@ -3,18 +3,15 @@ const User = require('./model')
 exports.teacherSignUp = ({ school, teacher, ...additional }) =>
   User.update(teacher, {
     [`schools.${school}`]: 'teacher',
-    'nav.school': school,
     ...additional
   })
 exports.addToSchool = ({ school, user, role }) =>
   User.update(user, {
-    [`schools.${school}`]: role,
-    'nav.school': school
+    [`schools.${school}`]: role
   })
-exports.setNav = ({ school, class: cls }, me) =>
+exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
-    [`nav.class.${school}`]: cls,
-    [`nav.school`]: school
+    nav: cls
   })
 exports.createStudent = async props => {
   const { name, studentId } = props
