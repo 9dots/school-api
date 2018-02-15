@@ -21,8 +21,9 @@ exports.createStudent = async props => {
   const displayName = `${name.given} ${name.family}`
   try {
     await User.checkForStudentId(studentId)
-    const student = await User.checkForStudentId({ displayName })
-    return User.update(student, getStudentObject(props))
+    const student = await User.create({ displayName })
+    await User.set(student, getStudentObject({ ...props, displayName }))
+    return { student }
   } catch (e) {
     return Promise.reject(e)
   }

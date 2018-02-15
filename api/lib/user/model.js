@@ -1,10 +1,10 @@
 const { firestore } = require('../middlewares/authenticate')
 const admin = require('firebase-admin')
-const { resolve, reject } = Promise
 
 const usersRef = firestore.collection('users')
 
 exports.update = (id, data) => usersRef.doc(id).update(data)
+exports.set = (id, data, opts) => usersRef.doc(id).set(data, opts)
 exports.get = id =>
   usersRef
     .doc(id)
@@ -22,8 +22,8 @@ exports.checkForStudentId = id =>
     .then(
       q =>
         q.empty
-          ? resolve()
-          : reject({
+          ? Promise.resolve()
+          : Promise.reject({
             message: 'studentId_taken',
             details: q.docs[0].get('displayName')
           })
