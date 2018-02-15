@@ -1,16 +1,16 @@
 const Class = require('./model')
-const Course = require('../course')
+const Module = require('../module')
 
 exports.removeStudent = ({ class: cls, student: user }) =>
   Class.removeUser(cls, user, 'student')
 exports.addStudent = ({ class: cls, student: user }) =>
   Class.addUser(cls, user, 'student')
-exports.addCourse = async ({ class: cls, module: mod }) => {
+exports.addCourse = async ({ class: cls, course }) => {
   try {
-    const { course } = await Course.createCopy({ module: mod, class: cls })
+    const { module: mod } = await Module.createCopy({ course, class: cls })
     return Class.update(cls, {
-      [`courses.${course}.active`]: false,
-      [`courses.${course}.course`]: course
+      [`modules.${mod}.active`]: false,
+      [`modules.${mod}.course`]: mod
     })
   } catch (e) {
     return Promise.reject(e)
