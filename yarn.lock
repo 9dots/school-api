@@ -3633,19 +3633,9 @@ safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, s
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-school-schema@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.6.tgz#7bef9a96f1818b198a5b5f781250bbc8a7674c3d"
-  dependencies:
-    "@f/map" "^1.5.3"
-    "@weo-edu/validate" "^2.12.7"
-    faker "^4.1.0"
-    firebase-admin "^5.8.2"
-    json-schema-faker "^0.5.0-rc12"
-
-school-schema@^0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.7.tgz#15fafaadb6a2b92748d6f7d51ccbc85c13025aad"
+school-schema@^0.1.8:
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.8.tgz#d8d74fccae702e821e7a83959681016e20a0358c"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"
