@@ -5,6 +5,10 @@ exports.removeStudent = ({ class: cls, student: user }) =>
   Class.removeUser(cls, user, 'student')
 exports.addStudent = ({ class: cls, student: user }) =>
   Class.addUser(cls, user, 'student')
+exports.assignLesson = ({ class: cls, lesson }) =>
+  Class.update(cls, {
+    assignedLesson: lesson
+  })
 exports.addCourse = async ({ class: cls, course }) => {
   try {
     const { module: mod } = await Module.createCopy({ course, class: cls })
