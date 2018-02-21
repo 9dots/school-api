@@ -12,6 +12,7 @@ module.exports = (req, res, next) => {
     }
     next()
   } catch (e) {
+    console.log('error', e)
     res.send({ ok: false, error: 'method_not_found' })
   }
 }
