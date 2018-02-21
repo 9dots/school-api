@@ -44,7 +44,7 @@
     "express": "^4.16.2",
     "firebase": "^4.8.0",
     "firebase-admin": "^5.7.0",
-    "school-schema": "^0.1.9",
+    "school-schema": "^0.1.10",
     "shoe": "^0.0.15"
   }
 }
