@@ -3633,9 +3633,9 @@ safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, s
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-school-schema@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.9.tgz#ae0adc9c153ecc3b0c06cb6a98d9dd830e65dafb"
+school-schema@^0.1.10:
+  version "0.1.10"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.10.tgz#3915d77c6026629e227be419687c94029dcb1b9a"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"
