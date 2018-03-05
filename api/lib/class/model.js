@@ -14,6 +14,12 @@ exports.create = (data, me) =>
   classesRef
     .add({ ...data, teachers: { [me]: true } })
     .then(ref => ({ class: ref.id }))
+exports.getStudents = id =>
+  classesRef
+    .doc(id)
+    .get()
+    .then(doc => doc.get('students'))
+    .then(students => Object.keys(students))
 exports.addToSubcollection = (id, field, data) =>
   classesRef
     .doc(id)
