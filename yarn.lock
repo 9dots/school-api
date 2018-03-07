@@ -98,6 +98,17 @@
   dependencies:
     "@f/iterator-symbol" "^1.0.0"
 
+"@f/identity@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@f/identity/-/identity-1.1.1.tgz#6fb49a3141b1684f64ecf6fb87baa744909ae4ce"
+
+"@f/index@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@f/index/-/index-1.0.4.tgz#a4586763d95d47446a4198ba891968522164af3d"
+  dependencies:
+    "@f/identity" "^1.1.1"
+    "@f/reduce-array" "^0.2.1"
+
 "@f/is-array@^1.0.0", "@f/is-array@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@f/is-array/-/is-array-1.1.1.tgz#cb3cd2f20016fc7b6d7049013c0318d75a222590"
@@ -128,7 +139,7 @@
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@f/is-number/-/is-number-1.1.1.tgz#004db64af35b89406fa27e79a17cc1bc071d0616"
 
-"@f/is-object@^1.0.0", "@f/is-object@^1.1.1":
+"@f/is-object@^1.0.0", "@f/is-object@^1.1.1", "@f/is-object@^1.1.4":
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/@f/is-object/-/is-object-1.1.4.tgz#278ddc91bd13645ac0b73963539e0e52677b7494"
   dependencies:
@@ -175,6 +186,21 @@
     "@f/map-array" "^1.1.0"
     "@f/map-gen" "^1.6.0"
     "@f/map-obj" "^1.1.2"
+
+"@f/omit@^2.2.3":
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/@f/omit/-/omit-2.2.3.tgz#a3dc9bc4bb646dc75cb9c1586e229b14e13c0c80"
+  dependencies:
+    "@f/foreach-obj" "^1.0.1"
+    "@f/identity" "^1.1.1"
+    "@f/index" "^1.0.4"
+    "@f/is-array" "^1.1.1"
+    "@f/is-function" "^1.1.1"
+    "@f/is-object" "^1.1.4"
+
+"@f/reduce-array@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@f/reduce-array/-/reduce-array-0.2.1.tgz#de8e7b7f837ef1319ea8a35b4ba70169ea7e999f"
 
 "@f/set-prop@^1.0.1":
   version "1.0.1"
@@ -3633,9 +3659,9 @@ safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, s
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-school-schema@^0.1.10:
-  version "0.1.10"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.10.tgz#3915d77c6026629e227be419687c94029dcb1b9a"
+school-schema@^0.1.11:
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.11.tgz#80e8d56b7f98980fef88bfabb48497adc5b6a700"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"

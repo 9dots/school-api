@@ -31,6 +31,7 @@
     "@f/foreach": "^1.2.2",
     "@f/map": "^1.5.3",
     "@f/map-values": "^1.0.0",
+    "@f/omit": "^2.2.3",
     "@f/set-prop": "^1.0.1",
     "@google-cloud/firestore": "^0.10.1",
     "@weo-edu/schema": "https://github.com/danleavitt0/schema.git",
@@ -45,7 +46,7 @@
     "firebase": "^4.8.0",
     "firebase-admin": "^5.7.0",
     "isomorphic-fetch": "^2.2.1",
-    "school-schema": "^0.1.10",
+    "school-schema": "^0.1.11",
     "shoe": "^0.0.15"
   }
 }
