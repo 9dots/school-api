@@ -1,17 +1,61 @@
+const integrations = require('../../../integrations')
+const Module = require('../module')
 const Class = require('./model')
 const User = require('../user')
-const Module = require('../module')
+
+// function getCopy (task, ) {
+//   const integration = integrations.find(int => int.pattern.match(task))
+//   if (!integration.copyPerStudent) {
+//     return {...task, url: }
+//   }
+// }
 
 exports.removeStudent = ({ class: cls, student: user }) =>
   Class.removeUser(cls, user, 'student')
 exports.addStudent = ({ class: cls, student: user }) =>
   Class.addUser(cls, user, 'student')
 exports.assignLesson = async ({ class: cls, lesson }) => {
-  // const students = await Class.getStudents(cls)
-  // await Promise.all(students.map(student => User.assignLesson(student, lesson)))
-  return Class.update(cls, {
-    assignedLesson: lesson
-  })
+  try {
+    const students = await Class.getStudents(cls)
+    const taskP = lesson.tasks.map(task => {
+      const int = integrations.find(int => int.pattern.match(task.url))
+      return {
+        ...task,
+        instance: int
+          ? int.copyPerStudent
+            ? () => int.events.copy(task.url)
+            : int.events.copy(task.url).then(res => res.link)
+          : task.url
+      }
+    })
+    const withNewTasks = await Promise.all(
+      students.map(async student => {
+        const tasks = await Promise.all(
+          taskP.map(async t => ({
+            ...t,
+            instance:
+              typeof t.instance === 'function'
+                ? await t.instance().then(res => res.link)
+                : t.instance
+          }))
+        )
+        return {
+          ...lesson,
+          tasks
+        }
+      })
+    )
+    await Promise.all(
+      students.map((student, i) =>
+        User.assignLesson({ user: student, lesson: withNewTasks[i] })
+      )
+    )
+    return Class.update(cls, {
+      assignedLesson: lesson
+    })
+  } catch (e) {
+    return Promise.reject(e)
+  }
 }
 exports.addCourse = async ({ class: cls, course }) => {
   try {

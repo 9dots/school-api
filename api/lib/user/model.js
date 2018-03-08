@@ -5,6 +5,18 @@ const usersRef = firestore.collection('users')
 
 exports.update = (id, data) => usersRef.doc(id).update(data)
 exports.set = (id, data, opts) => usersRef.doc(id).set(data, opts)
+exports.addAssign = (id, lessonId, data) =>
+  usersRef
+    .doc(id)
+    .collection('assignments')
+    .doc(lessonId)
+    .set(data)
+exports.updateAssign = (id, lessonId, data) =>
+  usersRef
+    .doc(id)
+    .collection('assignments')
+    .doc(lessonId)
+    .set(data, { merge: true })
 exports.get = id =>
   usersRef
     .doc(id)
