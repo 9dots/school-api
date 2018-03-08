@@ -46,7 +46,8 @@
     "firebase": "^4.8.0",
     "firebase-admin": "^5.7.0",
     "isomorphic-fetch": "^2.2.1",
-    "school-schema": "^0.1.11",
-    "shoe": "^0.0.15"
+    "school-schema": "^0.1.12",
+    "shoe": "^0.0.15",
+    "url-pattern": "^1.0.3"
   }
 }

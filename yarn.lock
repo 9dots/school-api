@@ -3659,9 +3659,9 @@ safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, s
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-school-schema@^0.1.11:
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.11.tgz#80e8d56b7f98980fef88bfabb48497adc5b6a700"
+school-schema@^0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.12.tgz#ad330e07ecdb3a2a5cf35f0be652860be3af6321"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"
@@ -4088,6 +4088,10 @@ unpipe@1.0.0, unpipe@~1.0.0:
 url-join@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/url-join/-/url-join-2.0.2.tgz#c072756967ad24b8b59e5741551caac78f50b8b7"
+
+url-pattern@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/url-pattern/-/url-pattern-1.0.3.tgz#0409292471b24f23c50d65a47931793d2b5acfc1"
 
 util-deprecate@~1.0.1:
   version "1.0.2"
