@@ -3,20 +3,15 @@ const Module = require('../module')
 const Class = require('./model')
 const User = require('../user')
 
-// function getCopy (task, ) {
-//   const integration = integrations.find(int => int.pattern.match(task))
-//   if (!integration.copyPerStudent) {
-//     return {...task, url: }
-//   }
-// }
-
 exports.removeStudent = ({ class: cls, student: user }) =>
   Class.removeUser(cls, user, 'student')
 exports.addStudent = ({ class: cls, student: user }) =>
   Class.addUser(cls, user, 'student')
-exports.assignLesson = async ({ class: cls, lesson }) => {
+exports.assignLesson = async data => {
   try {
-    const students = await Class.getStudents(cls)
+    const { class: cls, lesson } = data
+    const students = await Class.getField(cls, 'students', {}).then(Object.keys)
+    const teachers = await Class.getField(cls, 'teachers')
     const taskP = lesson.tasks.map(task => {
       const int = integrations.find(int => int.pattern.match(task.url))
       return {
@@ -45,9 +40,15 @@ exports.assignLesson = async ({ class: cls, lesson }) => {
         }
       })
     )
+    console.log(students)
     await Promise.all(
       students.map((student, i) =>
-        User.assignLesson({ user: student, lesson: withNewTasks[i] })
+        User.assignLesson({
+          ...data,
+          lesson: withNewTasks[i],
+          user: student,
+          teachers
+        })
       )
     )
     return Class.update(cls, {
