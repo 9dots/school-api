@@ -17,12 +17,12 @@ exports.create = (data, me) =>
   classesRef
     .add({ ...data, teachers: { [me]: true }, members: { [me]: true } })
     .then(ref => ({ class: ref.id }))
-exports.getStudents = id =>
+exports.getField = (id, fieldPath, empty = undefined) =>
   classesRef
     .doc(id)
     .get()
-    .then(doc => doc.get('students'))
-    .then(students => Object.keys(students))
+    .then(doc => doc.get(fieldPath) || empty)
+
 exports.addToSubcollection = (id, field, data) =>
   classesRef
     .doc(id)
