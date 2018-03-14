@@ -21,8 +21,8 @@ exports.assignLesson = async data => {
   return Promise.all(
     tasks.map((task, i) =>
       Activity.add(
-        Object.assign({}, omit('id', task), {
-          ...omit(['id', 'instance'], data),
+        Object.assign({}, omit(['id', 'instance'], task), {
+          ...omit(['id'], data),
           url: task.instance,
           active: i === 0,
           task: task.id,
