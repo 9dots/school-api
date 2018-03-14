@@ -19,11 +19,12 @@ exports.assignLesson = async data => {
   const { lesson, user } = data
   const { tasks = [], id } = lesson
   return Promise.all(
-    tasks.map(task =>
+    tasks.map((task, i) =>
       Activity.add(
         Object.assign({}, omit('id', task), {
-          ...omit('id', data),
+          ...omit(['id', 'instance'], data),
           url: task.instance,
+          active: i === 0,
           task: task.id,
           student: user,
           lesson: id

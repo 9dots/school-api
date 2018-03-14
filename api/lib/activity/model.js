@@ -13,6 +13,13 @@ const defaults = {
 // exports.add = data => console.log(Object.assign({}, data, defaults))
 exports.add = data => activitiesRef.add(Object.assign({}, data, defaults))
 exports.update = (id, data) => activitiesRef.doc(id).update(data)
+exports.findByModule = (module, lesson, task) =>
+  activitiesRef
+    .where('module', '==', module)
+    .where('lesson', '==', lesson)
+    .where('task', '==', task)
+    .get()
+    .then(snap => !snap.empty)
 exports.findActive = (user, lesson) =>
   activitiesRef
     .where('student', '==', user)
