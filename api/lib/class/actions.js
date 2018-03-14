@@ -12,35 +12,11 @@ exports.assignLesson = async data => {
     const { class: cls, lesson } = data
     const students = await Class.getField(cls, 'students', {}).then(Object.keys)
     const teachers = await Class.getField(cls, 'teachers')
-    const taskP = lesson.tasks.map(task => {
-      const int = integrations.find(int => int.pattern.match(task.url))
-      return {
-        ...task,
-        instance: int
-          ? int.copyPerStudent
-            ? () => int.events.copy(task.url)
-            : int.events.copy(task.url).then(res => res.link)
-          : task.url
-      }
-    })
-    const withNewTasks = await Promise.all(
-      students.map(async student => {
-        const tasks = await Promise.all(
-          taskP.map(async t => ({
-            ...t,
-            instance:
-              typeof t.instance === 'function'
-                ? await t.instance().then(res => res.link)
-                : t.instance
-          }))
-        )
-        return {
-          ...lesson,
-          tasks
-        }
-      })
+    const withNewTasks = await createStudentTasks(
+      students,
+      getTaskP(lesson),
+      lesson
     )
-    console.log(students)
     await Promise.all(
       students.map((student, i) =>
         User.assignLesson({
@@ -70,3 +46,37 @@ exports.addCourse = async ({ class: cls, course }) => {
   }
 }
 exports.createClass = Class.create
+
+function createStudentTasks (students, taskP, lesson) {
+  return Promise.all(
+    students.map(async student => {
+      const tasks = await Promise.all(
+        taskP.map(async t => ({
+          ...t,
+          instance:
+            typeof t.instance === 'function'
+              ? await t.instance().then(res => res.link)
+              : t.instance
+        }))
+      )
+      return {
+        ...lesson,
+        tasks
+      }
+    })
+  )
+}
+
+function getTaskP (lesson) {
+  return lesson.tasks.map(task => {
+    const int = integrations.find(int => int.pattern.match(task.url))
+    return {
+      ...task,
+      instance: int
+        ? int.copyPerStudent
+          ? () => int.events.copy(task.url)
+          : int.events.copy(task.url).then(res => res.link)
+        : task.url
+    }
+  })
+}
