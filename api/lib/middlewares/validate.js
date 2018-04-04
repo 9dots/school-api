@@ -3,7 +3,12 @@ module.exports = async (req, res, next) => {
     await validate(req.validator, req.body)
     next()
   } catch (e) {
-    res.send({ ok: false, error: 'missing_required_field', errorDetails: e })
+    console.log(e)
+    res.send({
+      ok: false,
+      error: 'missing_required_field',
+      errorDetails: e.message || e
+    })
   }
 }
 

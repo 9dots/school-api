@@ -11,12 +11,6 @@ exports.addAssign = (id, lessonId, data) =>
     .collection('assignments')
     .doc(lessonId)
     .set(data)
-exports.updateAssign = (id, lessonId, data) =>
-  usersRef
-    .doc(id)
-    .collection('assignments')
-    .doc(lessonId)
-    .set(data, { merge: true })
 exports.get = id =>
   usersRef
     .doc(id)
