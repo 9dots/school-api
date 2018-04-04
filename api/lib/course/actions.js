@@ -8,8 +8,8 @@ exports.get = Course.get
 
 exports.addLesson = ({ course, ...data }) =>
   Course.addLesson(course, { ...data, id: uuidv1() })
-exports.editLesson = ({ course, lesson, ...data }) =>
-  Course.updateLesson(course, lesson, l => ({ ...data, ...l }))
+exports.updateLesson = ({ course, lesson, ...data }) =>
+  Course.updateLesson(course, lesson, l => ({ ...l, ...data }))
 exports.removeLesson = ({ course, lesson }) =>
   Course.removeLesson(course, lesson)
 exports.create = async (data, user) => {
