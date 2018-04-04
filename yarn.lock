@@ -3659,9 +3659,9 @@ safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.1, safe-buffer@~5.1.0, s
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-school-schema@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.13.tgz#bfc5bf6d5766f5be88a1866a9d1c1e3ca8fdd27a"
+school-schema@^0.1.14:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.14.tgz#f5411648c48caa2c68c143d7160b34d61754d81d"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"
@@ -4104,6 +4104,10 @@ utils-merge@1.0.1:
 uuid@^3.0.0, uuid@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
+
+uuid@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 
 validate-npm-package-license@^3.0.1:
   version "3.0.1"

@@ -21,9 +21,8 @@ exports.assignLesson = async data => {
   return Promise.all(
     tasks.map((task, i) =>
       Activity.add(
-        Object.assign({}, omit(['id', 'instance'], task), {
+        Object.assign({}, omit(['id', 'instance', 'user'], task), {
           ...omit(['id'], data),
-          url: task.instance,
           active: i === 0,
           task: task.id,
           student: user,
@@ -32,10 +31,7 @@ exports.assignLesson = async data => {
       )
     )
   )
-  // return User.addAssign(user, lesson.id, lesson)
 }
-exports.setAssignedLessonIndex = ({ user, lesson, current }) =>
-  User.updateAssign(user, lesson, { current })
 exports.createStudent = async props => {
   const { name, studentId } = props
   const displayName = `${name.given} ${name.family}`
