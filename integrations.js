@@ -27,15 +27,4 @@ const integrations = [
   }
 ]
 
-// links =>
-//   fetch('http://localhost:5000/api/copy', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ links })
-//   })
-//     .then(res => res.json())
-//     .catch(e => console.error('error', e))
-
 module.exports = integrations

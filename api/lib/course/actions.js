@@ -6,16 +6,27 @@ const Course = require('./model')
 exports.incrementAssigns = Course.incrementAssigns
 exports.get = Course.get
 
+/**
+ * Course
+ */
+exports.create = async (data, user) => {
+  const course = await Course.create(data, user)
+  return { course: course.id }
+}
+
+/**
+ * Lesson
+ */
 exports.addLesson = ({ course, ...data }) =>
   Course.addLesson(course, { ...data, id: uuidv1() })
 exports.updateLesson = ({ course, lesson, ...data }) =>
   Course.updateLesson(course, lesson, l => ({ ...l, ...data }))
 exports.removeLesson = ({ course, lesson }) =>
   Course.removeLesson(course, lesson)
-exports.create = async (data, user) => {
-  const course = await Course.create(data, user)
-  return { course: course.id }
-}
+
+/**
+ * Task
+ */
 exports.addTask = async ({ course, lesson, url }) => {
   const int = integrations.find(int => int.pattern.match(url))
   if (int && int.events && int.events.unfurl) {
@@ -23,7 +34,7 @@ exports.addTask = async ({ course, lesson, url }) => {
     if (!ok) return Promise.reject(error)
     return updateLesson(tasks)
   }
-  return updateLesson([{ url }])
+  return updateLesson([{ url, displayName: url, type: 'link' }])
 
   function updateLesson (tasks) {
     return Course.updateLesson(course, lesson, l => ({
@@ -42,7 +53,10 @@ exports.removeTask = ({ course, lesson, task }) =>
       .map((t, i) => ({ ...t, index: i }))
   }))
 exports.updateTask = ({ course, lesson, task, ...data }) =>
-  Course.updateLesson(course, lesson, l => ({
-    ...l,
-    tasks: arraySet(l.tasks, l.tasks.findIndex(t => t.id === task), data)
-  }))
+  Course.updateLesson(course, lesson, l => {
+    const tsk = l.tasks.find(t => t.id === task)
+    return {
+      ...l,
+      tasks: arraySet(l.tasks, l.tasks.indexOf(tsk), { ...tsk, ...data })
+    }
+  })
