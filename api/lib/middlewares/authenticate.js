@@ -1,5 +1,6 @@
 const admin = require('firebase-admin')
 const cert = getServiceAccount()
+const url = require('url')
 
 const adminApp = admin.initializeApp({
   credential: admin.credential.cert(cert)
@@ -8,6 +9,10 @@ const adminApp = admin.initializeApp({
 exports.firestore = admin.firestore()
 
 exports.default = (req, res, next) => {
+  if (req.get('origin') === 'https://artbot-dev.firebaseapp.com') {
+    next()
+    return
+  }
   if (
     !req.headers.authorization ||
     !req.headers.authorization.startsWith('Bearer ')

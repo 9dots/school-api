@@ -15,13 +15,13 @@ const integrations = [
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ taskUrl })
         }).then(res => res.json()),
-      copy: taskUrl =>
+      copy: data =>
         fetch('http://localhost:5000/api/copy', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ taskUrl })
+          body: JSON.stringify(data)
         }).then(res => res.json())
     }
   }
