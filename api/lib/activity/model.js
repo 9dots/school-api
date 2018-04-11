@@ -14,6 +14,14 @@ const defaults = {
 exports.add = (id, data) =>
   activitiesRef.doc(id).set(Object.assign({}, defaults, data))
 exports.update = (id, data) => activitiesRef.doc(id).update(data)
+exports.createBatch = async (activities = []) => {
+  if (!activities.length) return
+  const batch = firestore.batch()
+  activities.forEach(activity => {
+    batch.set(activitiesRef.doc(activity.id), activity)
+  })
+  return batch.commit()
+}
 exports.findByModule = (user, module, lesson, task) =>
   activitiesRef
     .where('student', '==', user)

@@ -15,23 +15,6 @@ exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
     nav: cls
   })
-exports.assignLesson = async data => {
-  const { lesson, user } = data
-  const { tasks = [], id } = lesson
-  return Promise.all(
-    tasks.map((task, i) =>
-      Activity.add(
-        Object.assign({}, omit(['id', 'instance', 'user'], task), {
-          ...omit(['id'], data),
-          active: i === 0,
-          task: task.id,
-          student: user,
-          lesson: id
-        })
-      )
-    )
-  )
-}
 exports.createStudent = async props => {
   const { name, studentId } = props
   const displayName = `${name.given} ${name.family}`

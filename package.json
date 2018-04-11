@@ -28,6 +28,7 @@
     "tape": "^4.8.0"
   },
   "dependencies": {
+    "@f/flat-map": "^1.0.0",
     "@f/foreach": "^1.2.2",
     "@f/map": "^1.5.3",
     "@f/map-values": "^1.0.0",
@@ -47,7 +48,7 @@
     "firebase-admin": "^5.7.0",
     "isomorphic-fetch": "^2.2.1",
     "nodemon": "^1.17.3",
-    "school-schema": "^0.1.19",
+    "school-schema": "^0.1.22",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"
