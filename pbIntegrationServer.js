@@ -1,9 +1,8 @@
 const bodyParser = require('body-parser')
 const fetch = require('isomorphic-fetch')
-const omit = require('@f/omit')
 const app = require('express')()
+const omit = require('@f/omit')
 const cors = require('cors')()
-const path = require('path')
 const url = require('url')
 
 const origin = 'https://artbot-dev.firebaseapp.com'
@@ -12,10 +11,14 @@ app.use(bodyParser.json())
 app.use(cors)
 
 app.post('/api/copy', async (req, res) => {
-  const { taskUrl } = req.body
+  const { taskUrl, id } = req.body
   try {
     const { instance } = await createPixelbotsRequest('createInstance', {
-      taskUrl: url.parse(taskUrl).pathname
+      taskUrl: url.parse(taskUrl).pathname,
+      update: {
+        host: 'http://localhost:8000/api/activity.externalUpdate',
+        id
+      }
     })
     return res.send({ ok: true, instance: url.resolve(origin, instance) })
   } catch (e) {

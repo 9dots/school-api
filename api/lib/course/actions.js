@@ -13,6 +13,7 @@ exports.create = async (data, user) => {
   const course = await Course.create(data, user)
   return { course: course.id }
 }
+exports.updateCourse = ({ course, ...data }) => Course.update(course, data)
 
 /**
  * Lesson

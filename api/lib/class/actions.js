@@ -1,4 +1,3 @@
-const integrations = require('../../../integrations')
 const Module = require('../module')
 const Class = require('./model')
 const User = require('../user')

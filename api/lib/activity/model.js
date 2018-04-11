@@ -11,7 +11,8 @@ const defaults = {
 }
 
 // exports.add = data => console.log(Object.assign({}, data, defaults))
-exports.add = data => activitiesRef.add(Object.assign({}, defaults, data))
+exports.add = (id, data) =>
+  activitiesRef.doc(id).set(Object.assign({}, defaults, data))
 exports.update = (id, data) => activitiesRef.doc(id).update(data)
 exports.findByModule = (user, module, lesson, task) =>
   activitiesRef
