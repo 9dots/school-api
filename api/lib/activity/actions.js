@@ -3,14 +3,15 @@ const Activity = require('./model')
 const uuid = require('uuid/v1')
 
 exports.update = Activity.update
-exports.add = async data => {
+exports.createBatch = Activity.createBatch
+exports.getActivity = async data => {
   const { module, lesson, task, url, student } = data
   try {
     const exists = await Activity.findByModule(student, module, lesson, task)
     if (!exists) {
       const id = uuid()
       const instance = await getInstance(url, id)
-      return Activity.add(id, Object.assign({}, data, { instance, id }))
+      return Object.assign({}, data, { instance, id })
     }
   } catch (e) {
     Promise.reject(e)

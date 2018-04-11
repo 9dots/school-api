@@ -75,6 +75,12 @@
   dependencies:
     "@f/foreach-obj" "^1.0.1"
 
+"@f/flat-map@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@f/flat-map/-/flat-map-1.0.0.tgz#d2d02654c4db988e8c4b102c2875b5b976449a92"
+  dependencies:
+    "@f/is-array" "^1.1.1"
+
 "@f/foreach-array@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@f/foreach-array/-/foreach-array-1.0.0.tgz#163b0ae67cd1fc18d94c451da9006c3ce1ce6da8"
@@ -4437,9 +4443,9 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-school-schema@^0.1.19:
-  version "0.1.19"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.19.tgz#cb1bcdff8867bc00652c43b96ee3ce96eff2d4a6"
+school-schema@^0.1.22:
+  version "0.1.22"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.22.tgz#03fa1993acf2c1b001a0b537524b03f8ceb3a411"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"
