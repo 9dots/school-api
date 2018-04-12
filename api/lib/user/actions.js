@@ -1,6 +1,4 @@
-const Activity = require('../activity')
 const User = require('./model')
-const omit = require('@f/omit')
 
 exports.teacherSignUp = ({ school, teacher, ...additional }) =>
   User.update(teacher, {

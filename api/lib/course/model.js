@@ -49,7 +49,9 @@ function updateLesson (id, lessonId, fn) {
       const lessons = d.get('lessons') || []
       const lesson = lessons.find(l => l.id === lessonId)
       t.update(doc, {
-        lessons: arraySet(lessons, lessons.indexOf(lesson), fn(lesson))
+        lessons: arraySet(lessons, lessons.indexOf(lesson), fn(lesson)).map(
+          (lesson, i) => ({ ...lesson, index: i })
+        )
       })
     })
   })

@@ -1,5 +1,6 @@
 const integrations = require('../../../integrations')
 const arraySet = require('../utils/arraySet')
+const reorderCourse = require('../utils/reorder')
 const uuidv1 = require('uuid/v1')
 const Course = require('./model')
 
@@ -14,6 +15,16 @@ exports.create = async (data, user) => {
   return { course: course.id }
 }
 exports.update = ({ course, ...data }) => Course.update(course, data)
+exports.reorder = async ({ course, source, type, destination, id }) => {
+  try {
+    const { lessons } = await Course.get(course)
+    return Course.update(course, {
+      lessons: reorderCourse(lessons, source, type, destination, id)
+    })
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
 
 /**
  * Lesson
@@ -28,7 +39,7 @@ exports.removeLesson = ({ course, lesson }) =>
 /**
  * Task
  */
-exports.addTask = async ({ course, lesson, url }) => {
+exports.addTask = async ({ course, lesson, url, index }) => {
   const int = integrations.find(int => int.pattern.match(url))
   if (int && int.events && int.events.unfurl) {
     const { ok, tasks, error } = await int.events.unfurl(url)
