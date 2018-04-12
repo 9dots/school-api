@@ -14,7 +14,12 @@ exports.create = async (data, user) => {
   const course = await Course.create(data, user)
   return { course: course.id }
 }
-exports.update = ({ course, ...data }) => Course.update(course, data)
+exports.update = ({ course, ...data }) => {
+  if (data.tags) {
+    return Course.updateTransaction(course, data)
+  }
+  return Course.update(course, data)
+}
 exports.reorder = async ({ course, source, type, destination, id }) => {
   try {
     const { lessons } = await Course.get(course)

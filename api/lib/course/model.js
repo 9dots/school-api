@@ -9,12 +9,26 @@ exports.removeLesson = removeLesson
 exports.create = (data, owner) =>
   coursesRef.add({ ...data, published: false, owner })
 exports.update = (id, data) => coursesRef.doc(id).set(data, { merge: true })
+exports.updateTransaction = updateTransaction
 exports.incrementAssigns = id => incrementAssigns(id, coursesRef, firestore)
 exports.get = id =>
   coursesRef
     .doc(id)
     .get()
     .then(snap => snap.data())
+
+function updateTransaction (id, data) {
+  const doc = coursesRef.doc(id)
+  return firestore.runTransaction(t => {
+    return t.get(doc).then(d => {
+      const docData = d.data()
+      t.set(doc, {
+        ...docData,
+        ...data
+      })
+    })
+  })
+}
 
 function addLesson (id, data) {
   const doc = coursesRef.doc(id)
