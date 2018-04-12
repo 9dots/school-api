@@ -34,6 +34,7 @@
     "@f/map-values": "^1.0.0",
     "@f/omit": "^2.2.3",
     "@f/set-prop": "^1.0.1",
+    "@f/splice": "^1.0.0",
     "@google-cloud/firestore": "^0.10.1",
     "@weo-edu/schema": "https://github.com/danleavitt0/schema.git",
     "@weo-edu/validate": "^2.12.7",
@@ -48,7 +49,7 @@
     "firebase-admin": "^5.7.0",
     "isomorphic-fetch": "^2.2.1",
     "nodemon": "^1.17.3",
-    "school-schema": "^0.1.22",
+    "school-schema": "^0.1.26",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"

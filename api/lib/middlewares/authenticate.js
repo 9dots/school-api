@@ -1,6 +1,5 @@
 const admin = require('firebase-admin')
 const cert = getServiceAccount()
-const url = require('url')
 
 const adminApp = admin.initializeApp({
   credential: admin.credential.cert(cert)
