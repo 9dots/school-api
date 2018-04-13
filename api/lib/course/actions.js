@@ -1,6 +1,6 @@
 const integrations = require('../../../integrations')
-const arraySet = require('../utils/arraySet')
 const reorderCourse = require('../utils/reorder')
+const arraySet = require('../utils/arraySet')
 const uuidv1 = require('uuid/v1')
 const Course = require('./model')
 
@@ -51,13 +51,18 @@ exports.addTask = async ({ course, lesson, url, index }) => {
     if (!ok) return Promise.reject(error)
     return updateLesson(tasks)
   }
-  return updateLesson([{ url, displayName: url, type: 'link' }])
+  return updateLesson([{ url, displayName: url.substr(0, 25), type: 'link' }])
 
   function updateLesson (tasks) {
     return Course.updateLesson(course, lesson, l => ({
       ...l,
       tasks: (l.tasks || []).concat(
-        tasks.map((t, i) => ({ ...t, index: i, id: uuidv1() }))
+        tasks.map((t, i) => ({
+          ...t,
+          displayName: t.displayName.substr(0, 25),
+          index: i,
+          id: uuidv1()
+        }))
       )
     }))
   }

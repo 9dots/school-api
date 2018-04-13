@@ -1,10 +1,41 @@
 const integrations = require('../../../integrations')
 const Activity = require('./model')
+const omit = require('@f/omit')
 const uuid = require('uuid/v1')
 
 exports.update = Activity.update
 exports.createBatch = Activity.createBatch
-exports.getActivity = async data => {
+exports.getActivity = getActivity
+exports.externalUpdate = async ({ id, ...data }) => {
+  console.log('update external', id, data)
+  return Activity.update(id, data)
+}
+exports.setActive = async ({ activity, lesson }, user) => {
+  const active = await Activity.findActive(user, lesson)
+  await Promise.all(
+    active.map(active => Activity.update(active, { active: false }))
+  )
+  return Activity.update(activity, { active: true, started: true })
+}
+exports.getActivities = data => {
+  const { lesson, user } = data
+  const { tasks = [], id } = lesson
+  return Promise.all(
+    tasks.map((task, i) =>
+      getActivity(
+        Object.assign({}, omit(['id', 'instance', 'user'], task), {
+          ...omit(['id'], data),
+          active: i === 0,
+          task: task.id,
+          student: user,
+          lesson: id
+        })
+      )
+    )
+  ).then(activities => activities.filter(act => !!act))
+}
+
+async function getActivity (data) {
   const { module, lesson, task, url, student } = data
   try {
     const exists = await Activity.findByModule(student, module, lesson, task)
@@ -16,17 +47,6 @@ exports.getActivity = async data => {
   } catch (e) {
     Promise.reject(e)
   }
-}
-exports.externalUpdate = async ({ id, ...data }) => {
-  console.log('update external', id, data)
-  return Activity.update(id, data)
-}
-exports.setActive = async ({ activity, lesson }, user) => {
-  const active = await Activity.findActive(user, lesson)
-  await Promise.all(
-    active.map(active => Activity.update(active, { active: false }))
-  )
-  return Activity.update(activity, { active: true, started: true })
 }
 
 function getInstance (url, id) {

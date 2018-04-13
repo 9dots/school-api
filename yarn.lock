@@ -4447,9 +4447,9 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-school-schema@^0.1.26:
-  version "0.1.26"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.26.tgz#03078c9f6ae1a6575b32bae9e41cb819836e4de3"
+school-schema@^0.1.27:
+  version "0.1.27"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.27.tgz#128226f3e5ad42d51f379b6b4ae0807b80144a9e"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/validate" "^2.12.7"

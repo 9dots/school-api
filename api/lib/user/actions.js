@@ -1,3 +1,6 @@
+const Activity = require('../activity')
+const Module = require('../module')
+const Class = require('../class')
 const User = require('./model')
 
 exports.teacherSignUp = ({ school, teacher, ...additional }) =>
@@ -13,14 +16,30 @@ exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
     nav: cls
   })
-exports.createStudent = async props => {
-  const { name, studentId } = props
+exports.createStudent = async data => {
+  const { name, studentId, email } = data
   const displayName = `${name.given} ${name.family}`
   try {
     await User.checkForStudentId(studentId)
-    const student = await User.create({ displayName })
-    await User.set(student, getStudentObject({ ...props, displayName }))
-    return { student }
+    const student = await User.create({ displayName, email })
+    await User.set(student.uid, getStudentObject({ ...data, displayName }))
+    return { student: student.uid }
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+exports.assignLesson = async (data, me) => {
+  const { class: cls, lesson, module, user = me } = data
+  try {
+    const { teachers } = await Class.get(cls)
+    const { lessons } = await Module.get(module)
+    const activities = await Activity.getActivities({
+      ...data,
+      lesson: lessons.find(l => l.id === lesson),
+      teachers,
+      user
+    })
+    return Activity.createBatch(activities)
   } catch (e) {
     return Promise.reject(e)
   }
