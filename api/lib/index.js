@@ -19,7 +19,7 @@ app.post('/api/:method', async (req, res) => {
     const val = await action(body, uid)
     res.send({ ok: true, ...(val || {}) })
   } catch (e) {
-    res.send({ ok: false, error: e.message })
+    res.send({ ok: false, ...e })
   }
 })
 

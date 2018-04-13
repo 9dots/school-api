@@ -16,11 +16,22 @@ exports.get = id =>
     .doc(id)
     .get()
     .then(doc => doc.data())
-exports.create = credentials =>
-  admin
-    .auth()
-    .createUser(credentials)
-    .then(user => user.uid)
+exports.create = async credentials => {
+  try {
+    const user = await admin.auth().getUserByEmail(credentials.email)
+    return Promise.reject({
+      error: 'email_in_use',
+      errorDetails: [
+        {
+          field: 'email',
+          message: `Email is already in use by ${user.displayName}`
+        }
+      ]
+    })
+  } catch (e) {
+    return admin.auth().createUser(credentials)
+  }
+}
 exports.checkForStudentId = id =>
   usersRef
     .where('studentId', '==', id)
@@ -30,7 +41,9 @@ exports.checkForStudentId = id =>
         q.empty
           ? Promise.resolve()
           : Promise.reject({
-            message: 'studentId_taken',
-            details: q.docs[0].get('displayName')
+            error: 'studentId_taken',
+            errorDetails: [
+              { field: 'studentId', message: q.docs[0].get('displayName') }
+            ]
           })
     )
