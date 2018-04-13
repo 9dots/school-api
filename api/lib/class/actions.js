@@ -26,7 +26,7 @@ exports.assignLesson = async data => {
       activities.reduce((acc, act) => acc.concat(...act), [])
     )
     return Class.update(cls, {
-      assignedLesson: lesson
+      assignedLesson: lessonData
     })
   } catch (e) {
     return Promise.reject(e)

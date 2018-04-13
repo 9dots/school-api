@@ -22,12 +22,17 @@ function handleDrop (arr, source, destination, id) {
     if (lesson.id === destination.droppableId) {
       return {
         ...lesson,
-        tasks: splice(lesson.tasks, destination.index, 0, target)
+        tasks: splice(lesson.tasks, destination.index, 0, target).map(
+          (item, i) => ({ ...item, index: i })
+        )
       }
     } else if (lesson.id === source.droppableId) {
       return {
         ...lesson,
-        tasks: splice(lesson.tasks, source.index, 1)
+        tasks: splice(lesson.tasks, source.index, 1).map((item, i) => ({
+          ...item,
+          index: i
+        }))
       }
     }
     return lesson
@@ -39,5 +44,5 @@ function reorder (list, startIndex, endIndex) {
   const [removed] = result.splice(startIndex, 1)
   result.splice(endIndex, 0, removed)
 
-  return result
+  return result.map((item, i) => ({ ...item, index: i }))
 }
