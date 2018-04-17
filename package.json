@@ -49,7 +49,7 @@
     "firebase-admin": "^5.7.0",
     "isomorphic-fetch": "^2.2.1",
     "nodemon": "^1.17.3",
-    "school-schema": "^0.1.27",
+    "school-schema": "^0.1.28",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"

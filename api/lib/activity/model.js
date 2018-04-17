@@ -13,6 +13,11 @@ const defaults = {
 // exports.add = data => console.log(Object.assign({}, data, defaults))
 exports.add = (id, data) =>
   activitiesRef.doc(id).set(Object.assign({}, defaults, data))
+exports.get = id =>
+  activitiesRef
+    .doc(id)
+    .get()
+    .then(snap => snap.data())
 exports.update = (id, data) => activitiesRef.doc(id).update(data)
 exports.createBatch = async (activities = []) => {
   if (!activities.length) return
