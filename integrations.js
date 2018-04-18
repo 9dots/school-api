@@ -10,13 +10,13 @@ const integrations = [
     copyPerStudent: true,
     events: {
       unfurl: taskUrl =>
-        fetch('http://localhost:5000/api/unfurl', {
+        fetch('https://pb-integration-server.herokuapp.com/api/unfurl', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ taskUrl })
         }).then(res => res.json()),
       copy: data =>
-        fetch('http://localhost:5000/api/copy', {
+        fetch('https://pb-integration-server.herokuapp.com/api/copy', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

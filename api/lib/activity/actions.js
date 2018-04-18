@@ -17,6 +17,18 @@ exports.setActive = async ({ activity, lesson }, user) => {
   )
   return Activity.update(activity, { active: true, started: true })
 }
+exports.maybeSetCompleted = async ({ activity }) => {
+  try {
+    const { instance } = await Activity.get(activity)
+    const int = integrations.find(int => int.pattern.match(instance))
+    if (!int) {
+      await Activity.update(activity, { progress: 100, completed: true })
+      return
+    }
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
 exports.getActivities = data => {
   const { lesson, user } = data
   const { tasks = [], id } = lesson
