@@ -6,10 +6,7 @@ const uuid = require('uuid/v1')
 exports.update = Activity.update
 exports.createBatch = Activity.createBatch
 exports.getActivity = getActivity
-exports.externalUpdate = async ({ id, ...data }) => {
-  console.log('update external', id, data)
-  return Activity.update(id, data)
-}
+exports.externalUpdate = async ({ id, ...data }) => Activity.update(id, data)
 exports.setActive = async ({ activity, lesson }, user) => {
   const active = await Activity.findActive(user, lesson)
   await Promise.all(
