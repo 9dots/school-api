@@ -15,7 +15,8 @@ exports.create = async (data, user) => {
   return { course: course.id }
 }
 exports.update = ({ course, ...data }) => {
-  if (data.tags) {
+  if (data.tags || data.grade) {
+    console.log('here', data.grade)
     return Course.updateTransaction(course, data)
   }
   return Course.update(course, data)
