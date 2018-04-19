@@ -3,19 +3,19 @@ const arraySet = require('../utils/arraySet')
 
 const coursesRef = firestore.collection('courses')
 
-exports.addLesson = addLesson
-exports.updateLesson = updateLesson
-exports.removeLesson = removeLesson
-exports.updateTransaction = updateTransaction
+exports.incrementAssigns = id => incrementAssigns(id, coursesRef, firestore)
+exports.update = (id, data) => coursesRef.doc(id).set(data, { merge: true })
 exports.create = (data, owner) =>
   coursesRef.add({ ...data, published: false, owner })
-exports.update = (id, data) => coursesRef.doc(id).set(data, { merge: true })
-exports.incrementAssigns = id => incrementAssigns(id, coursesRef, firestore)
 exports.get = id =>
   coursesRef
     .doc(id)
     .get()
     .then(snap => snap.data())
+exports.updateTransaction = updateTransaction
+exports.removeLesson = removeLesson
+exports.updateLesson = updateLesson
+exports.addLesson = addLesson
 
 function updateTransaction (id, data) {
   const doc = coursesRef.doc(id)
