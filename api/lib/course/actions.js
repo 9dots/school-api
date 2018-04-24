@@ -10,13 +10,14 @@ exports.get = Course.get
 /**
  * Course
  */
+exports.unpublish = async ({ course }) =>
+  Course.update(course, { published: false })
 exports.create = async (data, user) => {
   const course = await Course.create(data, user)
   return { course: course.id }
 }
 exports.update = ({ course, ...data }) => {
   if (data.tags || data.grade) {
-    console.log('here', data.grade)
     return Course.updateTransaction(course, data)
   }
   return Course.update(course, data)
@@ -30,6 +31,20 @@ exports.reorder = async ({ course, source, type, destination, id }) => {
   } catch (e) {
     return Promise.reject(e)
   }
+}
+exports.publish = async ({ course }) => {
+  const { lessons = [] } = await Course.get(course)
+  if (!lessons.length) {
+    return Promise.reject(
+      validationError('course', 'Courses must have at least 1 lesson.')
+    )
+  }
+  if (lessons.some(({ tasks = [] }) => !tasks.length)) {
+    return Promise.reject(
+      validationError('lesson', 'All lessons must have at least 1 task.')
+    )
+  }
+  return Course.update(course, { published: true })
 }
 
 /**
@@ -83,3 +98,10 @@ exports.updateTask = ({ course, lesson, task, ...data }) =>
       tasks: arraySet(l.tasks, l.tasks.indexOf(tsk), { ...tsk, ...data })
     }
   })
+
+function validationError (field, message) {
+  return {
+    error: 'validation_error',
+    errorDetails: [{ field, message }]
+  }
+}
