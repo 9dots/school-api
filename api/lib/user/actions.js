@@ -22,7 +22,14 @@ exports.createStudent = async data => {
   try {
     await User.checkForStudentId(studentId)
     const student = await User.create({ displayName, email })
-    await User.set(student.uid, getStudentObject({ ...data, displayName }))
+    await User.set(
+      student.uid,
+      getStudentObject({
+        ...data,
+        role: data.grade === 14 && 'teacher',
+        displayName
+      })
+    )
     return { student: student.uid }
   } catch (e) {
     return Promise.reject(e)
@@ -45,13 +52,15 @@ exports.assignLesson = async (data, me) => {
   }
 }
 
-function getStudentObject ({ school, email, displayName, studentId, name }) {
+function getStudentObject (data) {
+  const { school, email, displayName, studentId, name, role = 'student' } = data
   return {
-    schools: { [school]: 'student' },
+    schools: { [school]: true },
     'nav.school': school,
     email: email || null,
     displayName,
     studentId,
+    role,
     name
   }
 }

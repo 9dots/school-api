@@ -6,6 +6,10 @@ exports.removeStudent = ({ class: cls, student: user }) =>
   Class.removeUser(cls, user, 'student')
 exports.addStudent = ({ class: cls, student: user }) =>
   Class.addUser(cls, user, 'student')
+exports.removeTeacher = ({ class: cls, teacher }, me) =>
+  Class.removeUser(cls, teacher || me, 'teacher')
+exports.addTeacher = ({ class: cls, teacher }, me) =>
+  Class.addUser(cls, teacher || me, 'teacher')
 exports.assignLesson = async data => {
   try {
     const { class: cls, lesson, module } = data
