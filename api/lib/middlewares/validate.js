@@ -3,6 +3,7 @@ module.exports = async (req, res, next) => {
     await validate(req.validator, req.body)
     next()
   } catch (e) {
+    console.log('error', e)
     res.send({
       ok: false,
       error: 'validation_error',
