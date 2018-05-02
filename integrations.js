@@ -4,9 +4,7 @@ const UrlPattern = require('url-pattern')
 const integrations = [
   {
     domain: 'https://pixelbots.io',
-    pattern: new UrlPattern(
-      '(http(s)\\://)(www.)artbot-dev.firebaseapp.com(/*)'
-    ),
+    pattern: new UrlPattern('(http(s)\\://)(www.)v1.pixelbots.io(/*)'),
     copyPerStudent: true,
     events: {
       unfurl: taskUrl =>

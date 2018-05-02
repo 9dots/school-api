@@ -8,7 +8,7 @@ const adminApp = admin.initializeApp({
 exports.firestore = admin.firestore()
 
 exports.default = (req, res, next) => {
-  if (req.get('origin') === 'https://artbot-dev.firebaseapp.com') {
+  if (req.get('origin') === 'https://v1.pixelbots.io') {
     next()
     return
   }
