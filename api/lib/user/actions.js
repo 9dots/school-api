@@ -5,7 +5,8 @@ const User = require('./model')
 
 exports.teacherSignUp = ({ school, teacher, ...additional }) =>
   User.update(teacher, {
-    [`schools.${school}`]: 'teacher',
+    [`schools.${school}`]: true,
+    role: 'teacher',
     ...additional
   })
 exports.addToSchool = ({ school, user, role }) =>
@@ -26,7 +27,7 @@ exports.createStudent = async data => {
       student.uid,
       getStudentObject({
         ...data,
-        role: data.grade === 14 && 'teacher',
+        role: data.grade === 14 ? 'teacher' : 'student',
         displayName
       })
     )
