@@ -18,10 +18,10 @@ exports.addTeacher = ({ class: cls, teacher }, me) =>
 exports.removeStudents = async ({ class: cls, students }) => {
   try {
     console.log(cls)
-    const classRef = Class.getRef(cls)
+    const classRef = await Class.getRef(cls)
     const batch = students.reduce(
       (acc, student) => acc.update(classRef, removeUser(student, 'student')),
-      Class.batch
+      Class.createBatch()
     )
     return batch.commit()
   } catch (e) {
@@ -32,7 +32,7 @@ exports.addStudents = ({ class: cls, students }) => {
   const classRef = Class.getRef(cls)
   const batch = students.reduce(
     (acc, student) => acc.update(classRef, addUser(student, 'student')),
-    Class.batch
+    Class.createBatch()
   )
   return batch.commit()
 }
@@ -63,6 +63,15 @@ exports.assignLesson = async data => {
     return Promise.reject(e)
   }
 }
+
+exports.setPasswordType = async ({ class: cls, passwordType }) => {
+  try {
+    return Class.update(cls, { passwordType })
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+
 exports.addCourse = async ({ class: cls, course }) => {
   try {
     const { module: mod } = await Module.createCopy({ course, class: cls })

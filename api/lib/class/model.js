@@ -3,7 +3,7 @@ const { firestore } = require('../middlewares/authenticate')
 
 const classesRef = firestore.collection('classes')
 
-exports.batch = firestore.batch()
+exports.createBatch = () => firestore.batch()
 exports.deleteValue = firebase.firestore.FieldValue.delete()
 exports.getRef = id => classesRef.doc(id)
 exports.update = (id, data) => classesRef.doc(id).update(data)

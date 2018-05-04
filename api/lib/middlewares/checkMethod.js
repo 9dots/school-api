@@ -1,4 +1,4 @@
-const schema = require('school-schema').default
+const schema = require('school-schema')
 
 module.exports = (req, res, next) => {
   const [methodFamily, method] = req.params.method.split('.')
