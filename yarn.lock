@@ -5658,9 +5658,9 @@ safer-buffer@^2.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-school-schema@^0.1.42:
-  version "0.1.42"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.42.tgz#4fc03fa4c76665bded765bf1c99f79a53bda465a"
+school-schema@^0.1.43:
+  version "0.1.43"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.43.tgz#ee9194a08c86ab0e5fce3498ddfb989e3c0b7235"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/schema" "https://github.com/danleavitt0/schema.git"

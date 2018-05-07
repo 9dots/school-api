@@ -84,6 +84,14 @@ exports.addCourse = async ({ class: cls, course }) => {
   }
 }
 
+exports.updateDetails = async ({class: cls, ...data}) => {
+  try {
+    return Class.update(cls, data)
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+
 /**
  * Utils
  */
