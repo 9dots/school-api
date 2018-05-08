@@ -12,7 +12,10 @@ exports.addStudent = async ({ class: cls, student: user }) => {
   const { passwordType } = await Class.get(cls)
   const { passwords = {} } = await User.get(user)
   if (!passwords[passwordType]) {
-    await User.setInsecurePassword({ user, type: passwordType })
+    await Promise.all([
+      User.setInsecurePassword({ user, type: passwordType }),
+      User.setNav({ class: cls }, user)
+    ])
   }
   return Class.update(cls, addUser(user, 'student'))
 }
@@ -74,17 +77,19 @@ exports.setPasswordType = async ({ class: cls, passwordType }) => {
   try {
     const { students = {} } = await Class.get(cls)
     const batch = await Object.keys(students).reduce(async (acc, student) => {
+      const b = await acc
       const password = await User.maybeGeneratePassword({
         user: student,
         type: passwordType
       })
       if (password) {
-        return acc.update(User.getRef(student), password)
+        return b.update(User.getRef(student), password)
       }
-      return acc
+      return b
     }, Class.createBatch().update(Class.getRef(cls), { passwordType }))
     return batch.commit()
   } catch (e) {
+    console.error(e)
     return Promise.reject(e)
   }
 }
