@@ -3,7 +3,9 @@ const admin = require('firebase-admin')
 
 const usersRef = firestore.collection('users')
 
+exports.getRef = id => usersRef.doc(id)
 exports.update = (id, data) => usersRef.doc(id).update(data)
+exports.getCredential = id => admin.auth().createCustomToken(id)
 exports.set = (id, data, opts) => usersRef.doc(id).set(data, opts)
 exports.addAssign = (id, lessonId, data) =>
   usersRef

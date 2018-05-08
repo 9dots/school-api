@@ -10,7 +10,12 @@ exports.update = (id, data) => classesRef.doc(id).update(data)
 
 exports.create = (data, me) =>
   classesRef
-    .add({ ...data, teachers: { [me]: true }, members: { [me]: true } })
+    .add({
+      ...data,
+      passwordType: 'image',
+      teachers: { [me]: true },
+      members: { [me]: true }
+    })
     .then(ref => ({ class: ref.id }))
 exports.get = id =>
   classesRef

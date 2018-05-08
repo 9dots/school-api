@@ -11,8 +11,18 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors)
-app.use(authenticate)
-app.use('/api/:method', checkMethod, validate)
+app.use('/api/:method', authenticate, checkMethod, validate)
+
+app.post('/studentSignIn', async (req, res) => {
+  const User = require('./user')
+  const { body } = req
+  try {
+    const val = await User.signInWithPassword(body)
+    res.send({ ok: true, ...(val || {}) })
+  } catch (e) {
+    res.send({ ok: false, ...e })
+  }
+})
 app.post('/api/:method', async (req, res) => {
   const { action, body, uid } = req
   try {

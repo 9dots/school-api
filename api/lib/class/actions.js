@@ -1,14 +1,21 @@
 const Activity = require('../activity')
 const Module = require('../module')
 const Class = require('./model')
+const User = require('../user')
 
 exports.createClass = Class.create
 exports.get = Class.get
 
 exports.removeStudent = ({ class: cls, student: user }) =>
   Class.update(cls, removeUser(user, 'student'))
-exports.addStudent = ({ class: cls, student: user }) =>
-  Class.update(cls, addUser(user, 'student'))
+exports.addStudent = async ({ class: cls, student: user }) => {
+  const { passwordType } = await Class.get(cls)
+  const { passwords = {} } = await User.get(user)
+  if (!passwords[passwordType]) {
+    await User.setInsecurePassword({ user, type: passwordType })
+  }
+  return Class.update(cls, addUser(user, 'student'))
+}
 
 exports.removeTeacher = ({ class: cls, teacher }, me) =>
   Class.update(cls, removeUser(teacher || me, 'teacher'))
@@ -17,7 +24,6 @@ exports.addTeacher = ({ class: cls, teacher }, me) =>
 
 exports.removeStudents = async ({ class: cls, students }) => {
   try {
-    console.log(cls)
     const classRef = await Class.getRef(cls)
     const batch = students.reduce(
       (acc, student) => acc.update(classRef, removeUser(student, 'student')),
@@ -66,7 +72,18 @@ exports.assignLesson = async data => {
 
 exports.setPasswordType = async ({ class: cls, passwordType }) => {
   try {
-    return Class.update(cls, { passwordType })
+    const { students = {} } = await Class.get(cls)
+    const batch = await Object.keys(students).reduce(async (acc, student) => {
+      const password = await User.maybeGeneratePassword({
+        user: student,
+        type: passwordType
+      })
+      if (password) {
+        return acc.update(User.getRef(student), password)
+      }
+      return acc
+    }, Class.createBatch().update(Class.getRef(cls), { passwordType }))
+    return batch.commit()
   } catch (e) {
     return Promise.reject(e)
   }
@@ -84,7 +101,7 @@ exports.addCourse = async ({ class: cls, course }) => {
   }
 }
 
-exports.updateDetails = async ({class: cls, ...data}) => {
+exports.updateDetails = async ({ class: cls, ...data }) => {
   try {
     return Class.update(cls, data)
   } catch (e) {

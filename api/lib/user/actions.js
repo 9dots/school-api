@@ -1,8 +1,11 @@
+const { getRandomPassword } = require('./utils')
 const Activity = require('../activity')
 const Module = require('../module')
 const Class = require('../class')
 const User = require('./model')
 
+exports.get = User.get
+exports.getRef = User.getRef
 exports.teacherSignUp = ({ school, teacher, ...additional }) =>
   User.update(teacher, {
     [`schools.${school}`]: true,
@@ -17,6 +20,17 @@ exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
     nav: cls
   })
+exports.setInsecurePassword = ({ user, password, type }) =>
+  User.update(user, {
+    [`passwords.${type}`]: password || getRandomPassword(type)
+  })
+exports.maybeGeneratePassword = async ({ user, type }) => {
+  const { passwords = {} } = await User.get(user)
+  if (!passwords[type]) {
+    return generateInsecurePassword(type)
+  }
+  return null
+}
 exports.createStudent = async data => {
   const { name, studentId, email } = data
   const displayName = `${name.given} ${name.family}`
@@ -50,6 +64,25 @@ exports.assignLesson = async (data, me) => {
     return Activity.createBatch(activities)
   } catch (e) {
     return Promise.reject(e)
+  }
+}
+exports.signInWithPassword = async ({ user, type, password: attempt }) => {
+  try {
+    const { passwords } = await User.get(user)
+    if (attempt === passwords[type]) {
+      const token = await User.getCredential(user)
+      return { token }
+    } else {
+      return Promise.reject({ error: 'invalid_credentials' })
+    }
+  } catch (e) {
+    Promise.reject(e)
+  }
+}
+
+function generateInsecurePassword (type) {
+  return {
+    [`passwords.${type}`]: getRandomPassword(type)
   }
 }
 
