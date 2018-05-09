@@ -11,6 +11,9 @@ const defaults = {
 }
 
 // exports.add = data => console.log(Object.assign({}, data, defaults))
+exports.transaction = firestore.runTransaction
+exports.batch = () => firestore.batch()
+exports.getRef = id => activitiesRef.doc(id)
 exports.add = (id, data) =>
   activitiesRef.doc(id).set(Object.assign({}, defaults, data))
 exports.get = id =>

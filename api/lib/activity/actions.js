@@ -9,16 +9,18 @@ exports.getActivity = getActivity
 exports.externalUpdate = async ({ id, ...data }) => Activity.update(id, data)
 exports.setActive = async ({ activity, lesson }, user) => {
   const active = await Activity.findActive(user, lesson)
-  await Promise.all(
-    active.map(active => Activity.update(active, { active: false }))
+  const batch = Activity.batch()
+  active.forEach(active =>
+    batch.update(Activity.getRef(active), { active: false })
   )
-  return Activity.update(activity, { active: true, started: true })
+  batch.update(Activity.getRef(activity), { active: true, started: true })
+  return batch.commit()
 }
-exports.maybeSetCompleted = async ({ activity }) => {
+exports.maybeSetCompleted = async ({ activity }, me) => {
   try {
-    const { instance } = await Activity.get(activity)
+    const { instance, student } = await Activity.get(activity)
     const int = integrations.find(int => int.pattern.match(instance))
-    if (!int) {
+    if (!int && student === me) {
       await Activity.update(activity, { progress: 100, completed: true })
       return
     }
