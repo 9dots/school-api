@@ -3,6 +3,8 @@ const Activity = require('./model')
 const omit = require('@f/omit')
 const uuid = require('uuid/v1')
 
+const API_URL = 'https://docket-school-api.herokuapp.com'
+
 exports.update = Activity.update
 exports.createBatch = Activity.createBatch
 exports.getActivity = getActivity
@@ -64,8 +66,13 @@ function getInstance (url, id) {
   const int = integrations.find(int => int.pattern.match(url))
   return int && int.events && int.events.copy
     ? int.events
-      .copy({ taskUrl: url, id })
+      .copy({
+        taskUrl: url,
+        update: {
+          host: `${API_URL}/api/activity.externalUpdate`,
+          id
+        }
+      })
       .then(res => res.instance)
-      .catch(e => console.log(e))
     : url
 }

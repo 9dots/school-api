@@ -1926,6 +1926,13 @@ create-error-class@^3.0.0, create-error-class@^3.0.2:
   dependencies:
     capture-stack-trace "^1.0.0"
 
+cross-env@^5.1.4:
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.1.5.tgz#31daf7f3a52ef337c8ddda585f08175cce5d1fa5"
+  dependencies:
+    cross-spawn "^5.1.0"
+    is-windows "^1.0.0"
+
 cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -3946,7 +3953,7 @@ is-url@^1.2.2:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/is-url/-/is-url-1.2.4.tgz#04a4df46d28c4cff3d73d01ff06abeb318a1aa52"
 
-is-windows@^1.0.2:
+is-windows@^1.0.0, is-windows@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/is-windows/-/is-windows-1.0.2.tgz#d1850eb9791ecd18e6182ce12a30f396634bb19d"
 
@@ -5647,9 +5654,9 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-school-schema@^0.1.45:
-  version "0.1.46"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.46.tgz#57d93eccab3bece9c15a853e59d62cf448d7dacf"
+school-schema@^0.1.47:
+  version "0.1.47"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.47.tgz#04c26c293001a509baa1876665c2e3f4050c224e"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/schema" "https://github.com/danleavitt0/schema.git"

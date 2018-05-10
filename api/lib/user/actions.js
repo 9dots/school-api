@@ -1,7 +1,6 @@
 const { getRandomPassword } = require('./utils')
 const Activity = require('../activity')
 const Module = require('../module')
-const Class = require('../class')
 const User = require('./model')
 
 exports.get = User.get
@@ -51,9 +50,8 @@ exports.createStudent = async data => {
   }
 }
 exports.assignLesson = async (data, me) => {
-  const { class: cls, lesson, module, user = me } = data
+  const { teachers, lesson, module, user = me } = data
   try {
-    const { teachers } = await Class.get(cls)
     const { lessons } = await Module.get(module)
     const activities = await Activity.getActivities({
       ...data,
@@ -63,7 +61,8 @@ exports.assignLesson = async (data, me) => {
     })
     return Activity.createBatch(activities)
   } catch (e) {
-    return Promise.reject(e)
+    console.error(e)
+    return Promise.reject({ error: e.message })
   }
 }
 exports.signInWithPassword = async ({ user, type, password: attempt }) => {

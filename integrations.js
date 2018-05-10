@@ -8,13 +8,13 @@ const integrations = [
     copyPerStudent: true,
     events: {
       unfurl: taskUrl =>
-        fetch('https://pb-integration-server.herokuapp.com/api/unfurl', {
+        fetch('https://www.pixelbots.io/api/unfurl', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ taskUrl })
         }).then(res => res.json()),
       copy: data =>
-        fetch('https://pb-integration-server.herokuapp.com/api/copy', {
+        fetch('https://www.pixelbots.io/api/copy', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
