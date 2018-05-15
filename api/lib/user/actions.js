@@ -61,7 +61,6 @@ exports.assignLesson = async (data, me) => {
     })
     return Activity.createBatch(activities)
   } catch (e) {
-    console.error(e)
     return Promise.reject({ error: e.message })
   }
 }

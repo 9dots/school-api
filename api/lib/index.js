@@ -20,6 +20,9 @@ app.use(bodyParser.json())
 app.use(cors)
 app.use('/api/:method', authenticate, checkMethod, validate)
 
+app.post('/test', (req, res) => {
+  setTimeout(() => res.send({ ok: true, payload: 'tacos' }), 100)
+})
 app.post('/api/:method', async (req, res) => {
   const { action, body, uid } = req
   try {
@@ -32,6 +35,7 @@ app.post('/api/:method', async (req, res) => {
 app.post('/studentSignIn', async (req, res) => {
   const User = require('./user')
   const { body } = req
+  res.set({ connection: 'keep-alive' })
   try {
     const val = await User.signInWithPassword(body)
     res.send({ ok: true, ...(val || {}) })

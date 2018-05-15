@@ -66,7 +66,7 @@ exports.assignLesson = async data => {
       activities.reduce((acc, act) => acc.concat(...act), [])
     )
     return Class.update(cls, {
-      assignedLesson: lessonData
+      assignedLesson: Object.assign({}, lessonData, { module })
     })
   } catch (e) {
     return Promise.reject(e)
