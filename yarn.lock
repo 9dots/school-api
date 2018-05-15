@@ -620,7 +620,7 @@
   version "8.5.8"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.5.8.tgz#92509422653f10e9c0ac18d87e0610b39f9821c7"
 
-"@weo-edu/schema@git+https://github.com/danleavitt0/schema.git":
+"@weo-edu/schema@git+https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd":
   version "0.1.10"
   resolved "git+https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
   dependencies:
@@ -630,7 +630,7 @@
     object-assign "^3.0.0"
     sliced "0.0.5"
 
-"@weo-edu/validate@git+https://github.com/danleavitt0/validate.git":
+"@weo-edu/validate@git+https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6":
   version "2.12.5"
   resolved "git+https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6"
   dependencies:
@@ -5577,13 +5577,13 @@ safer-buffer@^2.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-school-schema@^0.1.50:
-  version "0.1.50"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.50.tgz#c6690f3278cc04fb80a6aaa7d7201d64dcd2eba2"
+school-schema@^0.1.51:
+  version "0.1.51"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.51.tgz#1c172d341986d6ea4ae50bf1ffca80564882147b"
   dependencies:
     "@f/map" "^1.5.3"
-    "@weo-edu/schema" "https://github.com/danleavitt0/schema.git"
-    "@weo-edu/validate" "https://github.com/danleavitt0/validate.git"
+    "@weo-edu/schema" "https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
+    "@weo-edu/validate" "https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6"
     faker "^4.1.0"
     firebase-admin "^5.8.2"
 
