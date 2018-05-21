@@ -20,9 +20,6 @@ app.use(bodyParser.json())
 app.use(cors)
 app.use('/api/:method', authenticate, checkMethod, validate)
 
-app.post('/test', (req, res) => {
-  setTimeout(() => res.send({ ok: true, payload: 'tacos' }), 100)
-})
 app.post('/api/:method', async (req, res) => {
   const { action, body, uid } = req
   try {

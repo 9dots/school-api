@@ -1,6 +1,4 @@
 const integrations = require('../../../integrations')
-const arraySet = require('../utils/arraySet')
-const mapValues = require('@f/map-values')
 const Activity = require('./model')
 const omit = require('@f/omit')
 const uuid = require('uuid/v1')
@@ -37,7 +35,7 @@ exports.getActivities = async data => {
   const { tasks = [], id } = lesson
 
   // Create list of activities
-  const activities = await Promise.all(
+  return Promise.all(
     tasks.map((task, i) =>
       getActivity(
         Object.assign({}, omit(['id', 'instance', 'user'], task), {
@@ -50,23 +48,6 @@ exports.getActivities = async data => {
       )
     )
   ).then(activities => activities.filter(act => !!act))
-
-  // Batch requests to integrations
-  return Promise.all(
-    mapValues((data, int) => {
-      const copy = integrations.find(
-        integration => integration.id === Number(int)
-      ).events.copy
-      return copy({ tasks: data })
-    }, getIntegrations(activities))
-  )
-    .then(res => res.reduce((acc, tasks) => acc.concat(tasks.instances), []))
-    .then(instances =>
-      instances.reduce((acc, { instance, id }) => {
-        const activity = acc.find(act => act.id === id)
-        return arraySet(acc, acc.indexOf(activity), { ...activity, instance })
-      }, activities)
-    )
 }
 
 async function getActivity (data) {
@@ -80,23 +61,6 @@ async function getActivity (data) {
     }
   } catch (e) {
     Promise.reject(e)
-  }
-}
-
-function getIntegrations (activities) {
-  try {
-    return activities
-      .filter(act => act.instance && typeof act.instance.int === 'number')
-      .reduce((acc, act) => {
-        return {
-          ...acc,
-          [act.instance.int]: (acc[act.instance.int] || []).concat(
-            act.instance.data
-          )
-        }
-      }, {})
-  } catch (e) {
-    return []
   }
 }
 

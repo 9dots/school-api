@@ -1,8 +1,19 @@
 const Module = require('./model')
 const Course = require('../course')
 
-exports.create = Module.create
 exports.get = Module.get
+exports.create = Module.create
+exports.updateCourse = async ({ course, courseData }) => {
+  try {
+    const modules = await Module.getByCourse(course)
+    const batch = modules.reduce((b, { id, class: cls }) => {
+      return b.set(Module.getRef(id), getCourseData(courseData, course, cls))
+    }, Module.fsBatch())
+    return batch.commit()
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
 exports.createCopy = async ({ course, class: cls }) => {
   try {
     await Course.incrementAssigns(course)

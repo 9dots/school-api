@@ -4,8 +4,8 @@ const arraySet = require('../utils/arraySet')
 const uuidv1 = require('uuid/v1')
 const Course = require('./model')
 
-exports.incrementAssigns = Course.incrementAssigns
 exports.get = Course.get
+exports.incrementAssigns = Course.incrementAssigns
 
 /**
  * Course
@@ -30,11 +30,11 @@ exports.reorder = async ({ course, draft, source, type, destination, id }) => {
       lessons: reorderCourse(lessons, source, type, destination, id)
     })
   } catch (e) {
-    console.error(e)
     return Promise.reject({ error: e })
   }
 }
 exports.publish = async ({ course, draft }) => {
+  const Module = require('../module')
   const draftData = await Course.getDraft(course, draft)
   const { lessons = [] } = draftData
   if (!lessons.length) {
@@ -48,6 +48,7 @@ exports.publish = async ({ course, draft }) => {
     )
   }
   try {
+    Module.updateCourse({ course, courseData: draftData })
     return Course.updateTransaction(course, { ...draftData, published: true })
   } catch (e) {
     return Promise.reject({ error: e.message })
@@ -78,7 +79,7 @@ exports.removeLesson = ({ course, draft, lesson }) =>
 exports.addTask = async ({ course, draft, lesson, url, index }) => {
   const int = integrations.find(int => int.pattern.match(url))
   if (int && int.events && int.events.unfurl) {
-    const { ok, tasks, error } = await int.events.unfurl(url)
+    const { ok, tasks, error } = await int.events.unfurl({ taskUrl: url })
     if (!ok) return Promise.reject(error)
     return updateLesson(tasks)
   }

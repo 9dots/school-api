@@ -4,15 +4,16 @@ const arraySet = require('../utils/arraySet')
 const coursesRef = firestore.collection('courses')
 
 exports.incrementAssigns = id => incrementAssigns(id, coursesRef, firestore)
-exports.update = (id, data) => coursesRef.doc(id).set(data, { merge: true })
-exports.updateDraft = (id, draft, data) =>
-  coursesRef
-    .doc(id)
-    .collection('drafts')
-    .doc(draft)
-    .set(data, { merge: true })
+
 exports.create = (data, owner) =>
   coursesRef.add({ ...data, published: false, owner })
+exports.get = id =>
+  coursesRef
+    .doc(id)
+    .get()
+    .then(snap => snap.data())
+exports.update = (id, data) => coursesRef.doc(id).set(data, { merge: true })
+
 exports.createDraft = async id => {
   try {
     const snap = await coursesRef.doc(id).get()
@@ -29,11 +30,13 @@ exports.getDraft = (id, draft) =>
     .doc(draft)
     .get()
     .then(snap => snap.data())
-exports.get = id =>
+exports.updateDraft = (id, draft, data) =>
   coursesRef
     .doc(id)
-    .get()
-    .then(snap => snap.data())
+    .collection('drafts')
+    .doc(draft)
+    .set(data, { merge: true })
+
 exports.updateTransaction = updateTransaction
 exports.removeLesson = removeLesson
 exports.updateLesson = updateLesson

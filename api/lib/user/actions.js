@@ -1,3 +1,4 @@
+const getInstances = require('../utils/getInstances')
 const { getRandomPassword } = require('./utils')
 const Activity = require('../activity')
 const Module = require('../module')
@@ -58,7 +59,7 @@ exports.assignLesson = async (data, me) => {
       lesson: lessons.find(l => l.id === lesson),
       teachers,
       user
-    })
+    }).then(getInstances)
     return Activity.createBatch(activities)
   } catch (e) {
     return Promise.reject({ error: e.message })
