@@ -1,3 +1,4 @@
+const getInstances = require('../utils/getInstances')
 const { getRandomPassword } = require('./utils')
 const Activity = require('../activity')
 const Module = require('../module')
@@ -30,7 +31,53 @@ exports.maybeGeneratePassword = async ({ user, type }) => {
   }
   return null
 }
-exports.createStudent = async data => {
+exports.createStudent = createStudent
+exports.createStudents = async data => {
+  const res = await Promise.all(
+    data.map((student, i) =>
+      createStudent(student)
+        .then(res => res.student)
+        .catch(
+          e =>
+            e.error === 'studentId_taken' || e.error === 'email_in_use'
+              ? e.student
+              : { error: e.error }
+        )
+    )
+  )
+
+  return { add: res }
+}
+exports.assignLesson = async (data, me) => {
+  const { teachers, lesson, module, user = me } = data
+  try {
+    const { lessons } = await Module.get(module)
+    const activities = await Activity.getActivities({
+      ...data,
+      lesson: lessons.find(l => l.id === lesson),
+      teachers,
+      user
+    }).then(getInstances)
+    return Activity.createBatch(activities)
+  } catch (e) {
+    return Promise.reject({ error: e.message })
+  }
+}
+exports.signInWithPassword = async ({ user, type, password: attempt }) => {
+  try {
+    const { passwords } = await User.get(user)
+    if (attempt === passwords[type]) {
+      const token = await User.getCredential(user)
+      return { token }
+    } else {
+      return Promise.reject({ error: 'invalid_credentials' })
+    }
+  } catch (e) {
+    Promise.reject(e)
+  }
+}
+
+async function createStudent (data) {
   const { name, studentId, email } = data
   const displayName = `${name.given} ${name.family}`
   try {
@@ -47,35 +94,6 @@ exports.createStudent = async data => {
     return { student: student.uid }
   } catch (e) {
     return Promise.reject(e)
-  }
-}
-exports.assignLesson = async (data, me) => {
-  const { teachers, lesson, module, user = me } = data
-  try {
-    const { lessons } = await Module.get(module)
-    const activities = await Activity.getActivities({
-      ...data,
-      lesson: lessons.find(l => l.id === lesson),
-      teachers,
-      user
-    })
-    return Activity.createBatch(activities)
-  } catch (e) {
-    console.error(e)
-    return Promise.reject({ error: e.message })
-  }
-}
-exports.signInWithPassword = async ({ user, type, password: attempt }) => {
-  try {
-    const { passwords } = await User.get(user)
-    if (attempt === passwords[type]) {
-      const token = await User.getCredential(user)
-      return { token }
-    } else {
-      return Promise.reject({ error: 'invalid_credentials' })
-    }
-  } catch (e) {
-    Promise.reject(e)
   }
 }
 

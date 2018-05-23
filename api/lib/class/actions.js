@@ -1,3 +1,4 @@
+const getInstances = require('../utils/getInstances')
 const Activity = require('../activity')
 const Module = require('../module')
 const Class = require('./model')
@@ -62,11 +63,12 @@ exports.assignLesson = async data => {
         })
       )
     )
-    await Activity.createBatch(
+    const withInstances = await getInstances(
       activities.reduce((acc, act) => acc.concat(...act), [])
     )
+    await Activity.createBatch(withInstances)
     return Class.update(cls, {
-      assignedLesson: lessonData
+      assignedLesson: Object.assign({}, lessonData, { module })
     })
   } catch (e) {
     return Promise.reject(e)

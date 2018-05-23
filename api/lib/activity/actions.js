@@ -6,8 +6,8 @@ const uuid = require('uuid/v1')
 const API_URL = 'https://docket-school-api.herokuapp.com'
 
 exports.update = Activity.update
-exports.createBatch = Activity.createBatch
 exports.getActivity = getActivity
+exports.createBatch = Activity.createBatch
 exports.externalUpdate = async ({ id, ...data }) => Activity.update(id, data)
 exports.setActive = async ({ activity, lesson }, user) => {
   const active = await Activity.findActive(user, lesson)
@@ -30,9 +30,11 @@ exports.maybeSetCompleted = async ({ activity }, me) => {
     return Promise.reject(e)
   }
 }
-exports.getActivities = data => {
+exports.getActivities = async data => {
   const { lesson, user } = data
   const { tasks = [], id } = lesson
+
+  // Create list of activities
   return Promise.all(
     tasks.map((task, i) =>
       getActivity(
@@ -54,7 +56,7 @@ async function getActivity (data) {
     const exists = await Activity.findByModule(student, module, lesson, task)
     if (!exists) {
       const id = uuid()
-      const instance = await getInstance(url, id)
+      const instance = getInstance(url, id)
       return Object.assign({}, data, { instance, id })
     }
   } catch (e) {
@@ -65,14 +67,15 @@ async function getActivity (data) {
 function getInstance (url, id) {
   const int = integrations.find(int => int.pattern.match(url))
   return int && int.events && int.events.copy
-    ? int.events
-      .copy({
+    ? {
+      int: int.id,
+      data: {
         taskUrl: url,
         update: {
           host: `${API_URL}/api/activity.externalUpdate`,
           id
         }
-      })
-      .then(res => res.instance)
+      }
+    }
     : url
 }

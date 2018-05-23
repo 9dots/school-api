@@ -32,6 +32,7 @@ app.post('/api/:method', async (req, res) => {
 app.post('/studentSignIn', async (req, res) => {
   const User = require('./user')
   const { body } = req
+  res.set({ connection: 'keep-alive' })
   try {
     const val = await User.signInWithPassword(body)
     res.send({ ok: true, ...(val || {}) })

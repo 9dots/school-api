@@ -1,6 +1,5 @@
 const { firestore } = require('../middlewares/authenticate')
 const admin = require('firebase-admin')
-
 const usersRef = firestore.collection('users')
 
 exports.getRef = id => usersRef.doc(id)
@@ -23,6 +22,7 @@ exports.create = async credentials => {
     const user = await admin.auth().getUserByEmail(credentials.email)
     return Promise.reject({
       error: 'email_in_use',
+      student: user.uid,
       errorDetails: [
         {
           field: 'email',
@@ -44,6 +44,7 @@ exports.checkForStudentId = id =>
           ? Promise.resolve()
           : Promise.reject({
             error: 'studentId_taken',
+            student: q.docs[0].id,
             errorDetails: [
               { field: 'studentId', message: q.docs[0].get('displayName') }
             ]
