@@ -3,7 +3,10 @@ const Activity = require('./model')
 const omit = require('@f/omit')
 const uuid = require('uuid/v1')
 
-const API_URL = 'https://docket-school-api.herokuapp.com'
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://docket-school-api.herokuapp.com'
+    : 'http://localhost:8000'
 
 exports.update = Activity.update
 exports.getActivity = getActivity

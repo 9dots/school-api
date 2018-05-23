@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node api/lib/index.js",
-    "dev": "nodemon api/lib/index.js",
+    "start": "cross-env NODE_ENV=production; node api/lib/index.js",
+    "dev": "cross-env NODE_ENV=development; nodemon api/lib/index.js",
     "test-schema": "tape schema/**/test.js"
   },
   "devDependencies": {
@@ -51,7 +51,7 @@
     "nanoid": "^1.0.2",
     "nodemon": "^1.17.3",
     "request": "^2.86.0",
-    "school-schema": "^0.1.51",
+    "school-schema": "^0.1.52",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"

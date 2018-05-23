@@ -1,5 +1,7 @@
+const getCert = require('../../../getServiceAccount')
 const admin = require('firebase-admin')
-const cert = getServiceAccount()
+
+const cert = getCert()
 
 const adminApp = admin.initializeApp({
   credential: admin.credential.cert(cert)
@@ -49,16 +51,4 @@ function maybeDeleteApp () {
   return admin.apps.findIndex(app => app.name === 'user') > -1
     ? admin.app('user').delete()
     : Promise.resolve()
-}
-
-function getServiceAccount () {
-  try {
-    return require('../../../secret.json')
-  } catch (e) {
-    return {
-      projectId: process.env.PROJECT_ID,
-      clientEmail: process.env.CLIENT_EMAIL,
-      privateKey: process.env.SECRET_KEY.replace(/\\n/g, '\n')
-    }
-  }
 }
