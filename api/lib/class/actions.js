@@ -38,13 +38,16 @@ exports.removeStudents = async ({ class: cls, students }) => {
     return Promise.reject(e)
   }
 }
-exports.addStudents = ({ class: cls, students }) => {
+exports.addStudents = async ({ class: cls, students }) => {
   const classRef = Class.getRef(cls)
+  const { passwordType } = await Class.get(cls)
   const batch = students.reduce(
     (acc, student) => acc.update(classRef, addUser(student, 'student')),
     Class.createBatch()
   )
-  return batch.commit()
+  await batch.commit()
+  setPasswordType({ class: cls, passwordType })
+  return {}
 }
 
 exports.assignLesson = async data => {
@@ -75,26 +78,7 @@ exports.assignLesson = async data => {
   }
 }
 
-exports.setPasswordType = async ({ class: cls, passwordType }) => {
-  try {
-    const { students = {} } = await Class.get(cls)
-    const batch = await Object.keys(students).reduce(async (acc, student) => {
-      const b = await acc
-      const password = await User.maybeGeneratePassword({
-        user: student,
-        type: passwordType
-      })
-      if (password) {
-        return b.update(User.getRef(student), password)
-      }
-      return b
-    }, Class.createBatch().update(Class.getRef(cls), { passwordType }))
-    return batch.commit()
-  } catch (e) {
-    console.error(e)
-    return Promise.reject(e)
-  }
-}
+exports.setPasswordType = setPasswordType
 
 exports.addCourse = async ({ class: cls, course }) => {
   try {
@@ -119,6 +103,27 @@ exports.updateDetails = async ({ class: cls, ...data }) => {
 /**
  * Utils
  */
+
+async function setPasswordType ({ class: cls, passwordType }) {
+  try {
+    const { students = {} } = await Class.get(cls)
+    const batch = await Object.keys(students).reduce(async (acc, student) => {
+      const b = await acc
+      const password = await User.maybeGeneratePassword({
+        user: student,
+        type: passwordType
+      })
+      if (password) {
+        return b.update(User.getRef(student), password)
+      }
+      return b
+    }, Class.createBatch().update(Class.getRef(cls), { passwordType }))
+    return batch.commit()
+  } catch (e) {
+    console.error(e)
+    return Promise.reject(e)
+  }
+}
 
 /**
  * @function addUser

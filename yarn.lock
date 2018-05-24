@@ -610,9 +610,9 @@
   version "8.10.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.13.tgz#786153acbe3e8e0b844053e72c9d9f2db71c796a"
 
-"@weo-edu/schema@git+https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd":
+"@weo-edu/schema@https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd":
   version "0.1.10"
-  resolved "git+https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
+  resolved "https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
   dependencies:
     "@f/clone-shallow" "^1.1.3"
     component-inherit "0.0.3"
@@ -620,9 +620,9 @@
     object-assign "^3.0.0"
     sliced "0.0.5"
 
-"@weo-edu/validate@git+https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6":
+"@weo-edu/validate@https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6":
   version "2.12.5"
-  resolved "git+https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6"
+  resolved "https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6"
   dependencies:
     generate-function "^2.0.0"
     generate-object-property "^1.1.0"
@@ -1914,9 +1914,9 @@ create-error-class@^3.0.0, create-error-class@^3.0.2:
   dependencies:
     capture-stack-trace "^1.0.0"
 
-cross-env@^5.1.4:
-  version "5.1.5"
-  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.1.5.tgz#31daf7f3a52ef337c8ddda585f08175cce5d1fa5"
+cross-env@^5.1.6:
+  version "5.1.6"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-5.1.6.tgz#0dc05caf945b24e4b9e3b12871fe0e858d08b38d"
   dependencies:
     cross-spawn "^5.1.0"
     is-windows "^1.0.0"
@@ -5546,9 +5546,9 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-school-schema@^0.1.52:
-  version "0.1.52"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.52.tgz#06eb71b8791090c192528edfb21a61722ee9b689"
+school-schema@^0.1.53:
+  version "0.1.53"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.1.53.tgz#e2eb11078c8710a07f0ec81809c4aed9733affd0"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/schema" "https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
