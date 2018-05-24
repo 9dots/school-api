@@ -31,6 +31,30 @@ exports.maybeGeneratePassword = async ({ user, type }) => {
   }
   return null
 }
+exports.editUser = async ({ id, ...rest }) => {
+  const update = rest
+  const { name, studentId } = rest
+
+  update.displayName = `${name.given} ${name.family}`
+  update.lowerCaseUsername = update.username.toLowerCase()
+
+  if (studentId) {
+    update.studentId = studentId
+  }
+
+  try {
+    const promises = [User.checkForUsername(update.lowerCaseUsername, id)]
+    if (update.studentId) {
+      promises.push(User.checkForStudentId(update.studentId, id))
+    }
+    await Promise.all(promises)
+    const user = await User.edit(id, update)
+    return { user: user.id }
+  } catch (e) {
+    return Promise.reject(e)
+  }
+}
+
 exports.createStudent = createStudent
 exports.createStudents = async data => {
   const res = await Promise.all(

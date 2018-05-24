@@ -2,7 +2,8 @@ const { firestore } = require('../middlewares/authenticate')
 const admin = require('firebase-admin')
 const usersRef = firestore.collection('users')
 
-exports.getRef = id => usersRef.doc(id)
+const getRef = id => usersRef.doc(id)
+exports.getRef = getRef
 exports.update = (id, data) => usersRef.doc(id).update(data)
 exports.getCredential = id => admin.auth().createCustomToken(id)
 exports.set = (id, data, opts) => usersRef.doc(id).set(data, opts)
@@ -34,13 +35,15 @@ exports.create = async credentials => {
     return admin.auth().createUser(credentials)
   }
 }
-exports.checkForStudentId = id =>
+exports.edit = (id, data) => usersRef.doc(id).set(data, { merge: true })
+
+exports.checkForStudentId = (studentId, uid) =>
   usersRef
-    .where('studentId', '==', id)
+    .where('studentId', '==', studentId)
     .get()
     .then(
       q =>
-        q.empty
+        q.empty || (uid && q.docs[0].id === uid)
           ? Promise.resolve()
           : Promise.reject({
             error: 'studentId_taken',
@@ -48,5 +51,20 @@ exports.checkForStudentId = id =>
             errorDetails: [
               { field: 'studentId', message: q.docs[0].get('displayName') }
             ]
+          })
+    )
+
+exports.checkForUsername = (username, id) =>
+  usersRef
+    .where('lowerCaseUsername', '==', username)
+    .get()
+    .then(
+      q =>
+        q.empty || q.docs[0].id === id
+          ? Promise.resolve()
+          : Promise.reject({
+            error: 'username_taken',
+            student: q.docs[0].id,
+            errorDetails: [{ field: 'username', message: 'username_taken' }]
           })
     )
