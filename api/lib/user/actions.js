@@ -6,12 +6,15 @@ const User = require('./model')
 
 exports.get = User.get
 exports.getRef = User.getRef
-exports.teacherSignUp = ({ school, teacher, ...additional }) =>
-  User.update(teacher, {
+exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
+  const username = await getUniqueUsername(email || additional.name.given)
+  return User.update(teacher, {
     [`schools.${school}`]: true,
     role: 'teacher',
+    username,
     ...additional
   })
+}
 exports.addToSchool = ({ school, user, role }) =>
   User.update(user, {
     [`schools.${school}`]: role
@@ -107,12 +110,14 @@ async function createStudent (data) {
   try {
     await User.checkForStudentId(studentId)
     const student = await User.create({ displayName, email })
+    const username = await getUniqueUsername(email || name.given)
     await User.set(
       student.uid,
       getStudentObject({
         ...data,
         role: data.grade === 14 ? 'teacher' : 'student',
-        displayName
+        displayName,
+        username
       })
     )
     return { student: student.uid }
@@ -137,5 +142,24 @@ function getStudentObject (data) {
     studentId,
     role,
     name
+  }
+}
+
+async function getUniqueUsername (name) {
+  const i = name.lastIndexOf('@')
+  let newName = name
+    .slice(0, i > -1 ? i : name.length)
+    .replace(/[^a-zA-Z0-9]/g, '')
+
+  try {
+    await User.checkForUsername(newName.toLowerCase())
+    return newName
+  } catch (e) {
+    const match = name.match(/\d+$/)
+    const nextName = match
+      ? match[0].slice(0, match.index) + parseInt(match[0] + 1)
+      : name + '1'
+
+    User.getUniqueUsername(nextName)
   }
 }
