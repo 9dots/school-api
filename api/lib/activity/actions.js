@@ -54,9 +54,9 @@ exports.getActivities = async data => {
 }
 
 async function getActivity (data) {
-  const { module, lesson, task, url, student } = data
+  const { module, task, url, student } = data
   try {
-    const exists = await Activity.findByModule(student, module, lesson, task)
+    const exists = await Activity.findByModule(student, module, task)
     if (!exists) {
       const id = uuid()
       const instance = getInstance(url, id)

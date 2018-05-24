@@ -10,7 +10,6 @@ const defaults = {
   score: 0
 }
 
-// exports.add = data => console.log(Object.assign({}, data, defaults))
 exports.transaction = firestore.runTransaction
 exports.batch = () => firestore.batch()
 exports.getRef = id => activitiesRef.doc(id)
@@ -30,11 +29,10 @@ exports.createBatch = async (activities = []) => {
   })
   return batch.commit()
 }
-exports.findByModule = (user, module, lesson, task) =>
+exports.findByModule = (user, module, task) =>
   activitiesRef
     .where('student', '==', user)
     .where('module', '==', module)
-    .where('lesson', '==', lesson)
     .where('task', '==', task)
     .get()
     .then(snap => !snap.empty)
