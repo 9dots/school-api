@@ -21,7 +21,8 @@ app.use(cors)
 
 app.post('/boop', (req, res) => {
   console.log('boop')
-  console.log(req.body)
+  console.log(JSON.stringify(req.body))
+  res.send({ ok: true })
 })
 
 app.use('/api/:method', authenticate, checkMethod, validate)
