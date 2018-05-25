@@ -71,7 +71,7 @@ exports.assignLesson = async data => {
     )
     await Activity.createBatch(withInstances)
     return Class.update(cls, {
-      assignedLesson: Object.assign({}, lessonData, { module })
+      assignedLesson: { id: lesson, module }
     })
   } catch (e) {
     return Promise.reject(e)
