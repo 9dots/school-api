@@ -9,6 +9,7 @@ exports.getRef = User.getRef
 exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
   const username = await getUniqueUsername(email || additional.name.given)
   return User.update(teacher, {
+    lowerCaseUsername: username.toLowerCase(),
     [`schools.${school}`]: true,
     role: 'teacher',
     username,
@@ -115,9 +116,9 @@ async function createStudent (data) {
       student.uid,
       getStudentObject({
         ...data,
+        username,
         role: data.grade === 14 ? 'teacher' : 'student',
-        displayName,
-        username
+        displayName
       })
     )
     return { student: student.uid }
@@ -133,13 +134,23 @@ function generateInsecurePassword (type) {
 }
 
 function getStudentObject (data) {
-  const { school, email, displayName, studentId, name, role = 'student' } = data
+  const {
+    role = 'student',
+    displayName,
+    studentId,
+    username,
+    school,
+    email,
+    name
+  } = data
   return {
+    lowerCaseUsername: username.toLowerCase(),
     schools: { [school]: true },
     'nav.school': school,
     email: email || null,
     displayName,
     studentId,
+    username,
     role,
     name
   }
@@ -157,9 +168,8 @@ async function getUniqueUsername (name) {
   } catch (e) {
     const match = name.match(/\d+$/)
     const nextName = match
-      ? match[0].slice(0, match.index) + parseInt(match[0] + 1)
-      : name + '1'
-
-    User.getUniqueUsername(nextName)
+      ? match[0].slice(0, match.index) + (parseInt(match[0], 10) + 1)
+      : name + 1
+    return getUniqueUsername(nextName.toString())
   }
 }
