@@ -5,7 +5,7 @@ const uuid = require('uuid/v1')
 
 const API_URL =
   process.env.NODE_ENV === 'production'
-    ? 'https://docket-school-api.herokuapp.com'
+    ? process.env.HEROKU_URL
     : 'http://localhost:8000'
 
 exports.update = Activity.update
