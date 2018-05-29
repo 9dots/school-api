@@ -18,6 +18,13 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(cors)
+
+app.post('/boop', (req, res) => {
+  console.log('boop')
+  console.log(JSON.stringify(req.body))
+  res.send({ ok: true })
+})
+
 app.use('/api/:method', authenticate, checkMethod, validate)
 
 app.post('/api/:method', async (req, res) => {
