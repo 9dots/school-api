@@ -10,9 +10,9 @@ const defaults = {
   score: 0
 }
 
-exports.transaction = firestore.runTransaction
 exports.batch = () => firestore.batch()
 exports.getRef = id => activitiesRef.doc(id)
+exports.transaction = firestore.runTransaction
 exports.add = (id, data) =>
   activitiesRef.doc(id).set(Object.assign({}, defaults, data))
 exports.get = id =>
