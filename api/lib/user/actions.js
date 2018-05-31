@@ -16,7 +16,7 @@ exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
     ...additional
   })
 }
-exports.addToSchool = ({ school, user, role }) =>
+exports.addToSchool = ({ school, user }) =>
   User.update(user, {
     [`schools.${school}`]: true
   })
