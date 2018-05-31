@@ -168,7 +168,7 @@ async function getUniqueUsername (name) {
   } catch (e) {
     const match = name.match(/\d+$/)
     const nextName = match
-      ? match[0].slice(0, match.index) + (parseInt(match[0], 10) + 1)
+      ? name.slice(0, match.index) + (parseInt(match[0], 10) + 1)
       : name + 1
     return getUniqueUsername(nextName.toString())
   }
