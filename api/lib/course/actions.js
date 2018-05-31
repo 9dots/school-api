@@ -109,7 +109,6 @@ exports.removeTask = ({ course, draft, lesson, task }) =>
 exports.updateTask = ({ course, lesson, draft, task, ...data }) =>
   Course.updateLesson(course, draft, lesson, l => {
     const tsk = l.tasks.find(t => t.id === task)
-    console.log(task, tsk)
     return {
       ...l,
       tasks: arraySet(l.tasks, l.tasks.indexOf(tsk), { ...tsk, ...data })
