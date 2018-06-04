@@ -7,7 +7,9 @@ const User = require('./model')
 exports.get = User.get
 exports.getRef = User.getRef
 exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
-  const username = await getUniqueUsername(email || additional.name.given)
+  const tempName =
+    additional.name.given.charAt(0) + additional.name.family.substring(0, 5)
+  const username = await getUniqueUsername(email || tempName.toLowerCase())
   return User.update(teacher, {
     lowerCaseUsername: username.toLowerCase(),
     [`schools.${school}`]: true,
@@ -108,10 +110,11 @@ exports.signInWithPassword = async ({ user, type, password: attempt }) => {
 async function createStudent (data) {
   const { name, studentId, email } = data
   const displayName = `${name.given} ${name.family}`
+  const tempName = name.given.charAt(0) + name.family.substring(0, 5)
   try {
     await User.checkForStudentId(studentId)
     const student = await User.create({ displayName, email })
-    const username = await getUniqueUsername(email || name.given)
+    const username = await getUniqueUsername(email || tempName.toLowerCase())
     await User.set(
       student.uid,
       getStudentObject({
