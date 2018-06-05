@@ -1,6 +1,7 @@
 const { firestore } = require('../middlewares/authenticate')
-const admin = require('firebase-admin')
 const usersRef = firestore.collection('users')
+const admin = require('firebase-admin')
+const Username = require('../username')
 
 const getRef = id => usersRef.doc(id)
 exports.getRef = getRef
@@ -35,7 +36,21 @@ exports.create = async credentials => {
     return admin.auth().createUser(credentials)
   }
 }
-exports.edit = (id, data) => usersRef.doc(id).set(data, { merge: true })
+exports.edit = (id, data) =>
+  firestore.runTransaction(t => {
+    const doc = usersRef.doc(id)
+    return t.get(doc).then(async d => {
+      try {
+        const { username } = d.data()
+        if (username !== data.username) {
+          await Username.create(data.username, username)
+        }
+        return t.set(d.ref, data, { merge: true })
+      } catch (e) {
+        console.error(e)
+      }
+    })
+  })
 
 exports.checkForStudentId = (studentId, uid) =>
   usersRef
@@ -56,7 +71,7 @@ exports.checkForStudentId = (studentId, uid) =>
 
 exports.checkForUsername = (username, id) =>
   usersRef
-    .where('lowerCaseUsername', '==', username)
+    .where('username', '==', username.toLowerCase())
     .get()
     .then(
       q =>

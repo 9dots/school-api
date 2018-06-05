@@ -1,17 +1,16 @@
 const getInstances = require('../utils/getInstances')
 const { getRandomPassword } = require('./utils')
 const Activity = require('../activity')
+const Username = require('../username')
 const Module = require('../module')
 const User = require('./model')
 
 exports.get = User.get
 exports.getRef = User.getRef
 exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
-  const tempName =
-    additional.name.given.charAt(0) + additional.name.family.substring(0, 5)
-  const username = await getUniqueUsername(email || tempName.toLowerCase())
+  const tempName = createUsername(additional.name)
+  const username = await Username.getUniqueUsername(email || tempName, true)
   return User.update(teacher, {
-    lowerCaseUsername: username.toLowerCase(),
     [`schools.${school}`]: true,
     role: 'teacher',
     username,
@@ -42,14 +41,14 @@ exports.editUser = async ({ id, ...rest }) => {
   const { name, studentId } = rest
 
   update.displayName = `${name.given} ${name.family}`
-  update.lowerCaseUsername = update.username.toLowerCase()
+  update.username = update.username.toLowerCase()
 
   if (studentId) {
     update.studentId = studentId
   }
 
   try {
-    const promises = [User.checkForUsername(update.lowerCaseUsername, id)]
+    const promises = [User.checkForUsername(update.username, id)]
     if (update.studentId) {
       promises.push(User.checkForStudentId(update.studentId, id))
     }
@@ -110,11 +109,11 @@ exports.signInWithPassword = async ({ user, type, password: attempt }) => {
 async function createStudent (data) {
   const { name, studentId, email } = data
   const displayName = `${name.given} ${name.family}`
-  const tempName = name.given.charAt(0) + name.family.substring(0, 5)
+  const tempName = createUsername(name)
   try {
     await User.checkForStudentId(studentId)
     const student = await User.create({ displayName, email })
-    const username = await getUniqueUsername(email || tempName.toLowerCase())
+    const username = await Username.getUniqueUsername(email || tempName, true)
     await User.set(
       student.uid,
       getStudentObject({
@@ -147,7 +146,6 @@ function getStudentObject (data) {
     name
   } = data
   return {
-    lowerCaseUsername: username.toLowerCase(),
     schools: { [school]: true },
     'nav.school': school,
     email: email || null,
@@ -159,20 +157,6 @@ function getStudentObject (data) {
   }
 }
 
-async function getUniqueUsername (name) {
-  const i = name.lastIndexOf('@')
-  let newName = name
-    .slice(0, i > -1 ? i : name.length)
-    .replace(/[^a-zA-Z0-9]/g, '')
-
-  try {
-    await User.checkForUsername(newName.toLowerCase())
-    return newName
-  } catch (e) {
-    const match = name.match(/\d+$/)
-    const nextName = match
-      ? name.slice(0, match.index) + (parseInt(match[0], 10) + 1)
-      : name + 1
-    return getUniqueUsername(nextName.toString())
-  }
+function createUsername (name) {
+  return name.given.charAt(0) + name.family.substring(0, 5)
 }
