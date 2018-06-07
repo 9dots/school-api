@@ -30,16 +30,16 @@ async function create (username, prevName) {
   const { prefix } = getParts(username)
   const data = { [username.toLowerCase()]: true }
   if (prevName) data[prevName] = admin.firestore.FieldValue.delete()
-
   usernamesRef.doc(prefix).set(data, { merge: true })
 }
 
 function getParts (username) {
   const name = sanitize(username)
   const match = name.match(/\d+$/)
+  const isMatch = match && match.index > 0
   return {
-    prefix: match ? name.slice(0, match.index) : name,
-    suffix: match ? parseInt(match[0], 10) : undefined
+    prefix: isMatch ? name.slice(0, match.index) : name,
+    suffix: isMatch ? parseInt(match[0], 10) : undefined
   }
 }
 
