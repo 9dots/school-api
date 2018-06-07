@@ -15,6 +15,7 @@ const integrations = [
   {
     domain: 'https://docs.google.com/forms/d/',
     pattern: new UrlPattern('(http(s)\\://)docs.google.com/forms/d(/*)'),
+    classCopy: true,
     copyPerStudent: true,
     id: 2,
     events: {

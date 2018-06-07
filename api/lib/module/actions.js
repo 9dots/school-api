@@ -1,5 +1,5 @@
-const Module = require('./model')
 const Course = require('../course')
+const Module = require('./model')
 
 exports.get = Module.get
 exports.create = Module.create
