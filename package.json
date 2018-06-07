@@ -52,7 +52,7 @@
     "nanoid": "^1.0.2",
     "nodemon": "^1.17.3",
     "request": "^2.86.0",
-    "school-schema": "^0.1.53",
+    "school-schema": "^0.2.0",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"

@@ -66,10 +66,9 @@ exports.assignLesson = async data => {
         })
       )
     )
-    const withInstances = await getInstances(
-      activities.reduce((acc, act) => acc.concat(...act), [])
+    getInstances(activities.reduce((acc, act) => acc.concat(...act), [])).then(
+      Activity.createBatch
     )
-    await Activity.createBatch(withInstances)
     return Class.update(cls, {
       assignedLesson: { id: lesson, module }
     })
@@ -84,7 +83,7 @@ exports.addCourse = async ({ class: cls, course }) => {
   try {
     const { module: mod } = await Module.createCopy({ course, class: cls })
     return Class.update(cls, {
-      [`modules.${mod}.active`]: false,
+      [`modules.${mod}.ts`]: Class.getTimestamp(),
       [`modules.${mod}.course`]: mod
     })
   } catch (e) {
@@ -120,7 +119,6 @@ async function setPasswordType ({ class: cls, passwordType }) {
     }, Class.createBatch().update(Class.getRef(cls), { passwordType }))
     return batch.commit()
   } catch (e) {
-    console.error(e)
     return Promise.reject(e)
   }
 }

@@ -59,7 +59,7 @@ async function getActivity (data) {
     const exists = await Activity.findByModule(student, module, task)
     if (!exists) {
       const id = uuid()
-      const instance = getInstance(url, id)
+      const instance = getInstance(url, id, task)
       return Object.assign({}, data, { instance, id })
     }
   } catch (e) {
@@ -67,13 +67,14 @@ async function getActivity (data) {
   }
 }
 
-function getInstance (url, id) {
+function getInstance (url, id, task) {
   const int = integrations.find(int => int.pattern.match(url))
   return int && int.events && int.events.copy
     ? {
       int: int.id,
       data: {
         taskUrl: url,
+        task,
         update: {
           host: `${API_URL}/api/activity.externalUpdate`,
           id

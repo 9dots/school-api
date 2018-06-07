@@ -11,6 +11,17 @@ const integrations = [
       unfurl: createFetch('https://www.pixelbots.io/api/unfurl'),
       copy: createFetch('https://www.pixelbots.io/api/copy')
     }
+  },
+  {
+    domain: 'https://docs.google.com/forms/d/',
+    pattern: new UrlPattern('(http(s)\\://)docs.google.com/forms/d(/*)'),
+    classCopy: true,
+    copyPerStudent: true,
+    id: 2,
+    events: {
+      unfurl: createFetch('http://localhost:5000/api/unfurl'),
+      copy: createFetch('http://localhost:5000/api/copy')
+    }
   }
 ]
 
