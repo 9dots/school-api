@@ -1,4 +1,6 @@
+const { firestore } = require('../middlewares/authenticate')
 const getInstances = require('../utils/getInstances')
+const mapValues = require('@f/map-values')
 const Activity = require('../activity')
 const Module = require('../module')
 const Class = require('./model')
@@ -80,15 +82,30 @@ exports.assignLesson = async data => {
 exports.setPasswordType = setPasswordType
 
 exports.addCourse = async ({ class: cls, course }) => {
-  try {
-    const { module: mod } = await Module.createCopy({ course, class: cls })
-    return Class.update(cls, {
-      [`modules.${mod}.ts`]: Class.getTimestamp(),
-      [`modules.${mod}.course`]: mod
+  const classRef = await Class.getRef(cls)
+  return firestore.runTransaction(t => {
+    return t.get(classRef).then(async d => {
+      const docData = d.data()
+
+      // Check is course has already been added
+      const isAssigned = !!mapValues(
+        mod => mod.course === course,
+        docData.modules || {},
+        []
+      ).filter(val => val).length
+
+      if (!isAssigned) {
+        const { module: mod } = await Module.createCopy({
+          course,
+          class: cls
+        })
+        t.update(classRef, {
+          [`modules.${mod}.ts`]: Date.now(),
+          [`modules.${mod}.course`]: course
+        })
+      }
     })
-  } catch (e) {
-    return Promise.reject(e)
-  }
+  })
 }
 
 exports.updateDetails = async ({ class: cls, ...data }) => {

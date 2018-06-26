@@ -1,5 +1,6 @@
 const { firestore } = require('../middlewares/authenticate')
 const admin = require('firebase-admin')
+const _ = require('lodash')
 
 const usernamesRef = firestore.collection('usernames')
 
@@ -7,17 +8,18 @@ exports.create = create
 
 exports.getUniqueUsername = async (username, set) => {
   const { prefix, suffix } = getParts(username)
-  const num = parseInt(suffix, 10) || 0
+  const padLength = suffix && suffix.toString().length
   const doc = usernamesRef.doc(prefix)
 
-  let newName = username.toLowerCase()
+  let newName =
+    suffix === undefined ? prefix.toLowerCase() : prefix.toLowerCase() + suffix
 
   return firestore.runTransaction(t => {
     return t.get(doc).then(async d => {
       const names = d.data()
       if (d.exists && names[newName]) {
-        for (let i = num; names[newName]; i++) {
-          newName = prefix + (num + i)
+        for (let i = parseInt(suffix, 10) || 0; names[newName]; i++) {
+          newName = prefix + _.padStart(i, padLength, '0')
         }
       }
       if (set) await create(newName)
@@ -39,7 +41,7 @@ function getParts (username) {
   const isMatch = match && match.index > 0
   return {
     prefix: isMatch ? name.slice(0, match.index) : name,
-    suffix: isMatch ? parseInt(match[0], 10) : undefined
+    suffix: isMatch ? match[0] : undefined
   }
 }
 
