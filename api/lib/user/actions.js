@@ -38,21 +38,13 @@ exports.maybeGeneratePassword = async ({ user, type }) => {
 }
 exports.editUser = async ({ id, ...rest }) => {
   const update = rest
-  const { name, studentId } = rest
+  const { name } = rest
 
   update.displayName = `${name.given} ${name.family}`
   update.username = update.username.toLowerCase()
 
-  if (studentId) {
-    update.studentId = studentId
-  }
-
   try {
-    const promises = [User.checkForUsername(update.username, id)]
-    if (update.studentId) {
-      promises.push(User.checkForStudentId(update.studentId, id))
-    }
-    await Promise.all(promises)
+    await User.checkForUsername(update.username, id)
     const user = await User.edit(id, update)
     return { user: user.id }
   } catch (e) {
@@ -67,10 +59,7 @@ exports.createStudents = async data => {
       createStudent(student)
         .then(res => res.student)
         .catch(
-          e =>
-            e.error === 'studentId_taken' || e.error === 'email_in_use'
-              ? e.student
-              : { error: e.error }
+          e => (e.error === 'email_in_use' ? e.student : { error: e.error })
         )
     )
   )
@@ -107,13 +96,13 @@ exports.signInWithPassword = async ({ user, type, password: attempt }) => {
 }
 
 async function createStudent (data) {
-  const { name, studentId, email } = data
+  const { name, email } = data
   const displayName = `${name.given} ${name.family}`
   const tempName = createUsername(name)
   try {
-    await User.checkForStudentId(studentId)
     const student = await User.create({ displayName, email })
-    const username = await Username.getUniqueUsername(email || tempName, true)
+    const username = await Username.getUniqueUsername(tempName, true)
+
     await User.set(
       student.uid,
       getStudentObject({
@@ -136,21 +125,12 @@ function generateInsecurePassword (type) {
 }
 
 function getStudentObject (data) {
-  const {
-    role = 'student',
-    displayName,
-    studentId,
-    username,
-    school,
-    email,
-    name
-  } = data
+  const { role = 'student', displayName, username, school, email, name } = data
   return {
     schools: { [school]: true },
     'nav.school': school,
     email: email || null,
     displayName,
-    studentId,
     username,
     role,
     name

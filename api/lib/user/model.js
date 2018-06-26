@@ -28,7 +28,7 @@ exports.create = async credentials => {
       errorDetails: [
         {
           field: 'email',
-          message: `Email is already in use by ${user.displayName}`
+          message: 'Email already in use'
         }
       ]
     })
@@ -51,23 +51,6 @@ exports.edit = (id, data) =>
       }
     })
   })
-
-exports.checkForStudentId = (studentId, uid) =>
-  usersRef
-    .where('studentId', '==', studentId)
-    .get()
-    .then(
-      q =>
-        q.empty || (uid && q.docs[0].id === uid)
-          ? Promise.resolve()
-          : Promise.reject({
-            error: 'studentId_taken',
-            student: q.docs[0].id,
-            errorDetails: [
-              { field: 'studentId', message: q.docs[0].get('displayName') }
-            ]
-          })
-    )
 
 exports.checkForUsername = (username, id) =>
   usersRef

@@ -83,18 +83,27 @@ exports.addTask = async ({ course, draft, lesson, url, index }) => {
     if (!ok) return Promise.reject(error)
     return updateLesson(tasks)
   }
-  return updateLesson([{ url, displayName: url.substr(0, 25), type: 'link' }])
+  return updateLesson([{ url, type: 'practice' }])
 
   function updateLesson (tasks) {
     return Course.updateLesson(course, draft, lesson, l => ({
       ...l,
       tasks: (l.tasks || []).concat(
-        tasks.map((t, i) => ({
-          ...t,
-          displayName: t.displayName.substr(0, 25),
-          index: i,
-          id: uuidv1()
-        }))
+        tasks.map((t, i) => {
+          const update = {
+            ...t,
+            index: i,
+            id: uuidv1()
+          }
+          if (t.displayName) {
+            update.displayName = t.displayName.substr(0, 25)
+          }
+          // update.displayName = t.displayName
+          //   ? t.displayName.substr(0, 25)
+          //   : t.type.charAt(0).toUpperCase() + t.type.slice(1)
+
+          return update
+        })
       )
     }))
   }
