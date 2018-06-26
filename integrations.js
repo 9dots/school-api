@@ -8,8 +8,8 @@ const integrations = [
     copyPerStudent: true,
     id: 1,
     events: {
-      unfurl: createFetch('https://www.pixelbots.io/api/unfurl'),
-      copy: createFetch('https://www.pixelbots.io/api/copy')
+      unfurl: createPost('https://www.pixelbots.io/api/unfurl'),
+      copy: createPost('https://www.pixelbots.io/api/copy')
     }
   },
   {
@@ -17,15 +17,19 @@ const integrations = [
     pattern: new UrlPattern('(http(s)\\://)docs.google.com/forms/d(/*)'),
     classCopy: true,
     copyPerStudent: true,
+    teacherView: taskUrl =>
+      `https://google-form-integration.herokuapp.com/teacher/${taskUrl}`,
     id: 2,
     events: {
-      unfurl: createFetch('http://localhost:5000/api/unfurl'),
-      copy: createFetch('http://localhost:5000/api/copy')
+      unfurl: createPost(
+        'https://google-form-integration.herokuapp.com/api/unfurl'
+      ),
+      copy: createPost('https://google-form-integration.herokuapp.com/api/copy')
     }
   }
 ]
 
-function createFetch (url) {
+function createPost (url) {
   return data =>
     fetch(url, {
       method: 'POST',

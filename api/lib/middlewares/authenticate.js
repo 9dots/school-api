@@ -1,18 +1,35 @@
 const getCert = require('../../../getServiceAccount')
+const fetch = require('isomorphic-fetch')
 const admin = require('firebase-admin')
 
 const cert = getCert()
 
-const adminApp = admin.initializeApp({
-  credential: admin.credential.cert(cert)
-})
-
-exports.firestore = admin.firestore()
+// exports.firestore = admin.firestore()
 
 exports.default = (req, res, next) => {
-  if (req.get('origin') === 'https://v1.pixelbots.io') {
-    next()
-    return
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Apikey ')
+  ) {
+    const idToken = req.headers.authorization.split('Apikey ')[1]
+    return admin
+      .firestore()
+      .collection('integrations')
+      .where('Apikey', '==', idToken)
+      .get()
+      .then(snap => {
+        return snap.empty
+          ? Promise.reject('invalid_api_key')
+          : Promise.resolve()
+      })
+      .then(() => {
+        exports.firestore = admin.firestore()
+        next()
+      })
+      .catch(e => {
+        console.log(e)
+        return res.status(403).send(e)
+      })
   }
   if (
     !req.headers.authorization ||
@@ -22,23 +39,33 @@ exports.default = (req, res, next) => {
     return
   }
   const idToken = req.headers.authorization.split('Bearer ')[1]
-  adminApp
+  admin
     .auth()
     .verifyIdToken(idToken)
     .then(decodedIdToken => {
       maybeDeleteApp().then(() => {
         req.uid = decodedIdToken.uid
-        exports.firestore = admin
-          .initializeApp(
-            {
-              credential: admin.credential.cert(cert),
-              databaseAuthVariableOverride: {
-                uid: req.uid
-              }
+        const app = admin.initializeApp(
+          {
+            credential: admin.credential.cert(cert),
+            databaseAuthVariableOverride: {
+              uid: req.uid
+            }
+          },
+          'user'
+        )
+        exports.fetch = (url, data) =>
+          fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
             },
-            'user'
-          )
-          .firestore()
+            body: JSON.stringify(data)
+          }).then(response => {
+            response.res = res
+            return response
+          })
+        exports.firestore = app.firestore()
         next()
       })
     })

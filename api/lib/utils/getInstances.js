@@ -12,12 +12,22 @@ module.exports = activities =>
     }, getIntegrations(activities))
   )
     .then(res => res.reduce((acc, tasks) => acc.concat(tasks.instances), []))
-    .then(instances =>
-      instances.reduce((acc, { instance, id }) => {
+    .then(instances => {
+      return instances.reduce((acc, act) => {
+        const { instance, id } = act || {}
         const activity = acc.find(act => act.id === id)
-        return arraySet(acc, acc.indexOf(activity), { ...activity, instance })
+        const integration = integrations.find(
+          int => int.id === activity.instance.int
+        )
+        return arraySet(acc, acc.indexOf(activity), {
+          ...activity,
+          teacherView: integration.teacherView
+            ? integration.teacherView(activity.task)
+            : null,
+          instance
+        })
       }, activities)
-    )
+    })
 
 function getIntegrations (activities) {
   try {
@@ -32,6 +42,6 @@ function getIntegrations (activities) {
         }
       }, {})
   } catch (e) {
-    return []
+    return {}
   }
 }

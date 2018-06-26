@@ -76,11 +76,14 @@ exports.removeLesson = ({ course, draft, lesson }) =>
 /**
  * Task
  */
-exports.addTask = async ({ course, draft, lesson, url, index }) => {
+exports.addTask = async ({ course, draft, lesson, url, access_token }) => {
   const int = integrations.find(int => int.pattern.match(url))
   if (int && int.events && int.events.unfurl) {
-    const { ok, tasks, error } = await int.events.unfurl({ taskUrl: url })
-    if (!ok) return Promise.reject(error)
+    const { ok, tasks, error, errorDetails } = await int.events.unfurl({
+      taskUrl: url,
+      access_token
+    })
+    if (!ok) return Promise.reject({ error, errorDetails })
     return updateLesson(tasks)
   }
   return updateLesson([{ url, displayName: url.substr(0, 25), type: 'link' }])

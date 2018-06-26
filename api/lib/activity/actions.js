@@ -55,20 +55,24 @@ exports.getActivities = async data => {
 
 async function getActivity (data) {
   const { module, task, url, student } = data
+  const int = integrations.find(int => int.pattern.match(url)) || {}
   try {
     const exists = await Activity.findByModule(student, module, task)
     if (!exists) {
       const id = uuid()
-      const instance = getInstance(url, id, task)
-      return Object.assign({}, data, { instance, id })
+      const instance = getInstance(url, id, task, int)
+      return Object.assign({}, data, {
+        instance,
+        id,
+        integration: int.id || null
+      })
     }
   } catch (e) {
     Promise.reject(e)
   }
 }
 
-function getInstance (url, id, task) {
-  const int = integrations.find(int => int.pattern.match(url))
+function getInstance (url, id, task, int) {
   return int && int.events && int.events.copy
     ? {
       int: int.id,
