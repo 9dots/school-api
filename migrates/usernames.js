@@ -1,6 +1,11 @@
-const Username = require('../api/lib/username')
+const getServiceAccount = require('../getServiceAccount')
 const admin = require('firebase-admin')
 const omit = require('@f/omit')
+
+const cert = getServiceAccount('production')
+admin.initializeApp({ credential: admin.credential.cert(cert) })
+
+const Username = require('../api/lib/username')
 
 const firestore = admin.firestore()
 const usersRef = firestore.collection('users')

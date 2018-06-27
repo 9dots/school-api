@@ -1,7 +1,8 @@
 const { firestore } = require('../middlewares/authenticate')
+const padStart = require('lodash/padStart')
 const admin = require('firebase-admin')
-const _ = require('lodash')
 
+// const firestore = admin.firestore()
 const usernamesRef = firestore.collection('usernames')
 
 exports.create = create
@@ -19,7 +20,7 @@ exports.getUniqueUsername = async (username, set) => {
       const names = d.data()
       if (d.exists && names[newName]) {
         for (let i = parseInt(suffix, 10) || 0; names[newName]; i++) {
-          newName = prefix + _.padStart(i, padLength, '0')
+          newName = prefix + padStart(i, padLength, '0')
         }
       }
       if (set) await create(newName)
