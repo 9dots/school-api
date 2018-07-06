@@ -36,17 +36,10 @@ exports.default = (req, res, next) => {
     .auth()
     .verifyIdToken(idToken)
     .then(decodedIdToken => {
-      maybeDeleteApp().then(() => {
-        next()
-      })
+      req.uid = decodedIdToken.uid
+      next()
     })
     .catch(error => {
       return res.status(403).send({ ok: false, error: error.message })
     })
-}
-
-function maybeDeleteApp () {
-  return admin.apps.findIndex(app => app.name === 'user') > -1
-    ? admin.app('user').delete()
-    : Promise.resolve()
 }
