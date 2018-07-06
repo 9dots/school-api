@@ -11,20 +11,20 @@ const cors = require('cors')()
 const cert = getCert()
 
 const oauth2Client = new google.auth.OAuth2(
-  '1043095705337-3u723nkn2ssl2t7kid7ck8599anp1b6h.apps.googleusercontent.com',
-  'wFZ51rJu10Gi_Vrzh-DqatJO',
-  'http://localhost:8000/oauth_response'
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  `${process.env.HEROKU_URL}/oauth_response`
 )
 
 const app = express()
 admin.initializeApp({
   credential: admin.credential.cert(cert),
-  databaseURL: 'https://school-dev-28e75.firebaseio.com'
+  databaseURL: process.env.FB_DATABASE_URL
 })
 
 firebase.initializeApp({
-  apiKey: 'AIzaSyDrp1yspbjLecs1Zy46G28hV8gwWYgMAhs',
-  databaseURL: 'https://school-dev-28e75.firebaseio.com'
+  apiKey: process.env.API_KEY,
+  databaseURL: process.env.FB_DATABASE_URL
 })
 
 app.use(bodyParser.json())
@@ -66,10 +66,6 @@ app.post('/googleSignIn', async (req, res) => {
         'https://www.googleapis.com/auth/plus.me'
       ]
     })
-    // await admin
-    //   .database()
-    //   .ref(`tokens/${user}`)
-    //   .set(tokens)
     res.json({ ok: true, url })
   } catch (e) {
     res.json({ ok: false })
@@ -79,7 +75,9 @@ app.post('/googleSignIn', async (req, res) => {
 app.get('/oauth_response', async (req, res) => {
   const { code } = req.query
   const { tokens } = await oauth2Client.getToken(code)
-  res.redirect(`http://localhost:3000/authhandler?token=${tokens.access_token}`)
+  res.redirect(
+    `${process.env.CLIENT_URL}/authhandler?token=${tokens.access_token}`
+  )
   const cred = firebase.auth.GoogleAuthProvider.credential(tokens.id_token)
   const { user } = await firebase
     .auth()
