@@ -1,8 +1,4 @@
-const getCert = require('../../../getServiceAccount')
-const fetch = require('isomorphic-fetch')
 const admin = require('firebase-admin')
-
-const cert = getCert()
 
 exports.default = (req, res, next) => {
   if (
