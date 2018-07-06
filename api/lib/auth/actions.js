@@ -22,6 +22,7 @@ exports.getAccessToken = async (_, user) => {
     }
     return { tokens: omit('refresh_token', tokens) }
   } catch (e) {
+    console.error(e)
     if (e.message === 'no_tokens') {
       return Promise.reject({
         error: e.message,
