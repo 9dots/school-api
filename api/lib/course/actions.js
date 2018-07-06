@@ -3,6 +3,7 @@ const reorderCourse = require('../utils/reorder')
 const arraySet = require('../utils/arraySet')
 const uuidv1 = require('uuid/v1')
 const Course = require('./model')
+const Auth = require('../auth')
 
 exports.get = Course.get
 exports.incrementAssigns = Course.incrementAssigns
@@ -76,8 +77,9 @@ exports.removeLesson = ({ course, draft, lesson }) =>
 /**
  * Task
  */
-exports.addTask = async ({ course, draft, lesson, url, access_token }) => {
+exports.addTask = async ({ course, draft, lesson, url }, user) => {
   const int = integrations.find(int => int.pattern.match(url))
+  const { access_token } = await Auth.getAccessToken(null, user)
   if (int && int.events && int.events.unfurl) {
     const { ok, tasks, error, errorDetails } = await int.events.unfurl({
       taskUrl: url,

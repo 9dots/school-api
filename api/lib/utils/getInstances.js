@@ -2,13 +2,13 @@ const integrations = require('../../../integrations')
 const mapValues = require('@f/map-values')
 const arraySet = require('./arraySet')
 
-module.exports = activities =>
+module.exports = (activities, access_token = '') =>
   Promise.all(
     mapValues((data, int) => {
       const copy = integrations.find(
         integration => integration.id === Number(int)
       ).events.copy
-      return copy({ tasks: data })
+      return copy({ tasks: data, access_token })
     }, getIntegrations(activities))
   )
     .then(res => res.reduce((acc, tasks) => acc.concat(tasks.instances), []))

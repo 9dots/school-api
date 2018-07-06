@@ -57,7 +57,7 @@
     "nodemon": "^1.17.3",
     "path-to-regexp": "^2.2.1",
     "request": "^2.86.0",
-    "school-schema": "^0.2.3",
+    "school-schema": "^0.2.4",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"

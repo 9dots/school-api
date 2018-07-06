@@ -3,6 +3,7 @@ const { getRandomPassword } = require('./utils')
 const Activity = require('../activity')
 const Username = require('../username')
 const Module = require('../module')
+const Auth = require('../auth')
 const User = require('./model')
 
 exports.get = User.get
@@ -69,16 +70,19 @@ exports.createStudents = async data => {
 exports.assignLesson = async (data, me) => {
   const { teachers, lesson, module, user = me } = data
   try {
+    const teacher = Object.keys(teachers)[0]
+    const {
+      tokens: { access_token }
+    } = await Auth.getAccessToken(null, teacher)
     const { lessons } = await Module.get(module)
     const activities = await Activity.getActivities({
       ...data,
       lesson: lessons.find(l => l.id === lesson),
       teachers,
       user
-    }).then(getInstances)
+    }).then(activities => getInstances(activities, access_token))
     return Activity.createBatch(activities)
   } catch (e) {
-    console.log(e)
     return Promise.reject({ error: e.message })
   }
 }

@@ -4,6 +4,7 @@ const mapValues = require('@f/map-values')
 const Activity = require('../activity')
 const Module = require('../module')
 const Class = require('./model')
+const Auth = require('../auth')
 const User = require('../user')
 
 exports.createClass = Class.create
@@ -52,8 +53,9 @@ exports.addStudents = async ({ class: cls, students }) => {
   return {}
 }
 
-exports.assignLesson = async data => {
+exports.assignLesson = async (data, user) => {
   try {
+    const { tokens } = await Auth.getAccessToken(null, user)
     const { class: cls, lesson, module } = data
     const { students = {}, teachers } = await Class.get(cls)
     const { lessons } = await Module.get(module)
@@ -68,9 +70,10 @@ exports.assignLesson = async data => {
         })
       )
     )
-    getInstances(activities.reduce((acc, act) => acc.concat(...act), [])).then(
-      Activity.createBatch
-    )
+    getInstances(
+      activities.reduce((acc, act) => acc.concat(...act), []),
+      tokens.access_token
+    ).then(Activity.createBatch)
     return Class.update(cls, {
       assignedLesson: { id: lesson, module }
     })
