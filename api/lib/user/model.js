@@ -1,4 +1,4 @@
-const admin = require('admin-admin')
+const admin = require('firebase-admin')
 const Username = require('../username')
 
 const firestore = admin.firestore()

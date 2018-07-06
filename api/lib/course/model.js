@@ -1,5 +1,5 @@
 const arraySet = require('../utils/arraySet')
-const admin = require('admin-admin')
+const admin = require('firebase-admin')
 
 const firestore = admin.firestore()
 const coursesRef = firestore.collection('courses')
