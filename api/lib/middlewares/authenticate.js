@@ -4,8 +4,6 @@ const admin = require('firebase-admin')
 
 const cert = getCert()
 
-// exports.firestore = admin.firestore()
-
 exports.default = (req, res, next) => {
   if (
     req.headers.authorization &&
@@ -23,7 +21,6 @@ exports.default = (req, res, next) => {
           : Promise.resolve()
       })
       .then(() => {
-        exports.firestore = admin.firestore()
         next()
       })
       .catch(e => {
@@ -44,28 +41,6 @@ exports.default = (req, res, next) => {
     .verifyIdToken(idToken)
     .then(decodedIdToken => {
       maybeDeleteApp().then(() => {
-        req.uid = decodedIdToken.uid
-        const app = admin.initializeApp(
-          {
-            credential: admin.credential.cert(cert),
-            databaseAuthVariableOverride: {
-              uid: req.uid
-            }
-          },
-          'user'
-        )
-        exports.fetch = (url, data) =>
-          fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          }).then(response => {
-            response.res = res
-            return response
-          })
-        exports.firestore = app.firestore()
         next()
       })
     })

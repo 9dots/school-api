@@ -1,11 +1,11 @@
-const { firestore } = require('../middlewares/authenticate')
-const firebase = require('firebase-admin')
+const admin = require('admin-admin')
 
+const firestore = admin.firestore()
 const classesRef = firestore.collection('classes')
 
-exports.getTimestamp = () => firebase.firestore.FieldValue.serverTimestamp()
+exports.getTimestamp = () => admin.firestore.FieldValue.serverTimestamp()
 exports.update = (id, data) => classesRef.doc(id).update(data)
-exports.deleteValue = firebase.firestore.FieldValue.delete()
+exports.deleteValue = admin.firestore.FieldValue.delete()
 exports.createBatch = () => firestore.batch()
 exports.getRef = id => classesRef.doc(id)
 

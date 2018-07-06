@@ -23,8 +23,8 @@ exports.setActive = async ({ activity, lesson }, user) => {
 }
 exports.maybeSetCompleted = async ({ activity }, me) => {
   try {
-    const { instance, student } = await Activity.get(activity)
-    const int = integrations.find(int => int.pattern.match(instance))
+    const { url, student } = await Activity.get(activity)
+    const int = integrations.find(int => int.pattern.match(url))
     if (!int && student === me) {
       await Activity.update(activity, { progress: 100, completed: true })
       return

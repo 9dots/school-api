@@ -1,11 +1,13 @@
-const { firestore } = require('../middlewares/authenticate')
 const getInstances = require('../utils/getInstances')
 const mapValues = require('@f/map-values')
 const Activity = require('../activity')
+const admin = require('firebase-admin')
 const Module = require('../module')
 const Class = require('./model')
 const Auth = require('../auth')
 const User = require('../user')
+
+const firestore = admin.firestore()
 
 exports.createClass = Class.create
 exports.get = Class.get

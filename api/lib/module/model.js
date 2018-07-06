@@ -1,5 +1,6 @@
-const { firestore } = require('../middlewares/authenticate')
+const admin = require('admin-admin')
 
+const firestore = admin.firestore()
 const modulesRef = firestore.collection('modules')
 
 exports.fsBatch = () => firestore.batch()

@@ -1,8 +1,7 @@
-const { firestore } = require('../middlewares/authenticate')
 const padStart = require('lodash/padStart')
 const admin = require('firebase-admin')
 
-// const firestore = admin.firestore()
+const firestore = admin.firestore()
 const usernamesRef = firestore.collection('usernames')
 
 exports.create = create
