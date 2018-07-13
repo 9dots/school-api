@@ -18,15 +18,13 @@ const integrations = [
     classCopy: true,
     copyPerStudent: true,
     teacherView: taskUrl =>
-      `https://google-form-integration-stagin.herokuapp.com/teacher/${taskUrl}`,
+      `https://google-form-integration.herokuapp.com/teacher/${taskUrl}`,
     id: 2,
     events: {
       unfurl: createPost(
-        'https://google-form-integration-stagin.herokuapp.com/api/unfurl'
+        'https://google-form-integration.herokuapp.com/api/unfurl'
       ),
-      copy: createPost(
-        'https://google-form-integration-stagin.herokuapp.com/api/copy'
-      )
+      copy: createPost('https://google-form-integration.herokuapp.com/api/copy')
     }
   }
 ]
