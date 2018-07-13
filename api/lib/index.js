@@ -56,10 +56,8 @@ app.post('/studentSignIn', async (req, res) => {
 app.post('/googleSignIn', async (req, res) => {
   try {
     const url = oauth2Client.generateAuthUrl({
-      // 'online' (default) or 'offline' (gets refresh_token)
       access_type: 'offline',
       prompt: 'select_account',
-      // If you only need one scope you can pass it as a string
       scope: [
         'https://www.googleapis.com/auth/drive',
         'https://www.googleapis.com/auth/forms',

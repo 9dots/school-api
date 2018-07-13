@@ -1,7 +1,7 @@
 const integrations = require('../../../integrations')
 const Activity = require('./model')
 const omit = require('@f/omit')
-const uuid = require('uuid/v1')
+const uuidv1 = require('uuid/v1')
 
 const API_URL =
   process.env.NODE_ENV === 'production'
@@ -11,7 +11,14 @@ const API_URL =
 exports.update = Activity.update
 exports.getActivity = getActivity
 exports.createBatch = Activity.createBatch
-exports.externalUpdate = async ({ id, ...data }) => Activity.update(id, data)
+exports.externalUpdate = async ({ id, ...data }) => {
+  try {
+    await Activity.update(id, data)
+    return
+  } catch (e) {
+    Promise.reject('could_not_update')
+  }
+}
 exports.setActive = async ({ activity, lesson }, user) => {
   const active = await Activity.findActive(user, lesson)
   const batch = Activity.batch()
@@ -54,13 +61,13 @@ exports.getActivities = async data => {
 }
 
 async function getActivity (data) {
-  const { module, task, url, student } = data
+  const { module, task, url, uuid, student } = data
   const int = integrations.find(int => int.pattern.match(url)) || {}
   try {
     const exists = await Activity.findByModule(student, module, task)
     if (!exists) {
-      const id = uuid()
-      const instance = getInstance(url, id, task, int)
+      const id = uuidv1()
+      const instance = getInstance(url, id, uuid, int)
       return Object.assign({}, data, {
         instance,
         id,

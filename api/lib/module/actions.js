@@ -1,5 +1,6 @@
 const Course = require('../course')
 const Module = require('./model')
+const uuid = require('uuid/v1')
 
 exports.get = Module.get
 exports.create = Module.create
@@ -29,9 +30,17 @@ function getCourseData (mod, course, cls) {
   return {
     ...mod,
     class: cls,
+    lessons: addTaskIds(mod),
     course: {
       ref: course,
       version: mod.version || 0
     }
   }
+}
+
+function addTaskIds (course) {
+  return course.lessons.map(l => ({
+    ...l,
+    tasks: l.tasks.map(t => ({ ...t, uuid: uuid() }))
+  }))
 }
