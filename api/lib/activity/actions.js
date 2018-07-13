@@ -16,6 +16,7 @@ exports.externalUpdate = async ({ id, ...data }) => {
     await Activity.update(id, data)
     return
   } catch (e) {
+    console.error(id, e)
     Promise.reject('could_not_update')
   }
 }
