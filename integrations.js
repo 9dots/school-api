@@ -21,9 +21,7 @@ const integrations = [
       `https://google-form-integration.herokuapp.com/teacher/${taskUrl}`,
     id: 2,
     events: {
-      unfurl: createPost(
-        'https://google-form-integration.herokuapp.com/api/unfurl'
-      ),
+      unfurl: createPost('http://localhost:5000/api/unfurl'),
       copy: createPost('https://google-form-integration.herokuapp.com/api/copy')
     }
   }

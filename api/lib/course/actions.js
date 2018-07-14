@@ -79,13 +79,14 @@ exports.removeLesson = ({ course, draft, lesson }) =>
  */
 exports.addTask = async ({ course, draft, lesson, url }, user) => {
   const int = integrations.find(int => int.pattern.match(url))
-  const { access_token } = await Auth.getAccessToken(null, user)
+  const {
+    tokens: { access_token }
+  } = await Auth.getAccessToken(null, user)
   if (int && int.events && int.events.unfurl) {
     const { ok, tasks, error, errorDetails } = await int.events.unfurl({
       taskUrl: url,
       access_token
     })
-    console.log(ok, tasks, error, errorDetails)
     if (!ok) return Promise.reject({ error, errorDetails })
     return updateLesson(tasks)
   }
