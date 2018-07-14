@@ -85,6 +85,7 @@ exports.addTask = async ({ course, draft, lesson, url }, user) => {
       taskUrl: url,
       access_token
     })
+    console.log(ok, tasks, error, errorDetails)
     if (!ok) return Promise.reject({ error, errorDetails })
     return updateLesson(tasks)
   }
