@@ -1,5 +1,5 @@
 const admin = require('firebase-admin')
-
+const chunk = require('lodash/chunk')
 const firestore = admin.firestore()
 const activitiesRef = firestore.collection('activities')
 
@@ -24,11 +24,17 @@ exports.get = id =>
 exports.update = (id, data) => activitiesRef.doc(id).update(data)
 exports.createBatch = async (activities = []) => {
   if (!activities.length) return
-  const batch = firestore.batch()
-  activities.forEach(activity => {
-    batch.set(activitiesRef.doc(activity.id), activity)
-  })
-  return batch.commit()
+  const chunks = chunk(activities, 500)
+  return Promise.all(
+    chunks.map(chunk =>
+      chunk
+        .reduce(
+          (acc, activity) => acc.set(activitiesRef.doc(activity.id), activity),
+          firestore.batch()
+        )
+        .commit()
+    )
+  )
 }
 exports.findByModule = (user, module, task) =>
   activitiesRef
