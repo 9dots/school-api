@@ -76,6 +76,7 @@ async function getActivity (data) {
       })
     }
   } catch (e) {
+    console.error(e)
     Promise.reject(e)
   }
 }

@@ -14,7 +14,6 @@ async function migrateUsernames () {
   const users = await getUsers()
   const transformed = await Promise.all(users.map(transformUsers))
   const userPromises = transformed.map(user => {
-    if (!user.id) console.log(user, user.id)
     usersRef.doc(user.id).set(omit('id', user))
   })
   const namePromises = transformed.map(user => Username.create(user.username))

@@ -66,6 +66,7 @@ app.post('/googleSignIn', async (req, res) => {
     })
     res.json({ ok: true, url })
   } catch (e) {
+    console.error(e)
     res.json({ ok: false })
   }
 })

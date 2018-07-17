@@ -105,10 +105,6 @@ exports.addTask = async ({ course, draft, lesson, url }, user) => {
           if (t.displayName) {
             update.displayName = t.displayName.substr(0, 25)
           }
-          // update.displayName = t.displayName
-          //   ? t.displayName.substr(0, 25)
-          //   : t.type.charAt(0).toUpperCase() + t.type.slice(1)
-
           return update
         })
       )
