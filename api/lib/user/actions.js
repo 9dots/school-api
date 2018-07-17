@@ -97,7 +97,7 @@ exports.signInWithPassword = async ({ user, type, password: attempt }) => {
 }
 
 function addToSchool ({ school, user }) {
-  User.update(user, {
+  return User.update(user, {
     [`schools.${school}`]: true
   })
 }
@@ -122,7 +122,7 @@ async function createStudent (data) {
     return { student: student.uid }
   } catch (e) {
     if (e.error === 'email_in_use') {
-      await addToSchool({ school, student: e.student })
+      await addToSchool({ school, user: e.student })
       return { student: e.student }
     }
     return Promise.reject(e)
