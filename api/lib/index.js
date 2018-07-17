@@ -61,7 +61,8 @@ app.post('/googleSignIn', async (req, res) => {
       scope: [
         'https://www.googleapis.com/auth/drive',
         'https://www.googleapis.com/auth/forms',
-        'https://www.googleapis.com/auth/plus.me'
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile'
       ]
     })
     res.json({ ok: true, url })
@@ -78,6 +79,7 @@ app.get('/oauth_response', async (req, res) => {
     `${process.env.CLIENT_URL}/authhandler?token=${tokens.access_token}`
   )
   const cred = firebase.auth.GoogleAuthProvider.credential(tokens.id_token)
+
   const { user } = await firebase
     .auth()
     .signInAndRetrieveDataWithCredential(cred)
