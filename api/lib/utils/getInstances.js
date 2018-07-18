@@ -22,7 +22,7 @@ module.exports = (activities, access_token = '') =>
         return arraySet(acc, acc.indexOf(activity), {
           ...activity,
           teacherView: integration.teacherView
-            ? integration.teacherView(activity.task)
+            ? integration.teacherView(activity.uuid)
             : null,
           instance
         })

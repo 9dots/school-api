@@ -33,7 +33,8 @@ exports.getAccessToken = async (_, user) => {
           scope: [
             'https://www.googleapis.com/auth/drive',
             'https://www.googleapis.com/auth/forms',
-            'https://www.googleapis.com/auth/plus.me'
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile'
           ]
         })
       })

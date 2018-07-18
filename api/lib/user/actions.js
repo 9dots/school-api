@@ -18,10 +18,7 @@ exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
     ...additional
   })
 }
-exports.addToSchool = ({ school, user }) =>
-  User.update(user, {
-    [`schools.${school}`]: true
-  })
+exports.addToSchool = addToSchool
 exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
     nav: cls
@@ -64,7 +61,6 @@ exports.createStudents = async data => {
         )
     )
   )
-
   return { add: res }
 }
 exports.assignLesson = async (data, me) => {
@@ -100,8 +96,14 @@ exports.signInWithPassword = async ({ user, type, password: attempt }) => {
   }
 }
 
+function addToSchool ({ school, user }) {
+  return User.update(user, {
+    [`schools.${school}`]: true
+  })
+}
+
 async function createStudent (data) {
-  const { name, email } = data
+  const { name, email, school } = data
   const displayName = `${name.given} ${name.family}`
   const tempName = createUsername(name)
   try {
@@ -119,6 +121,10 @@ async function createStudent (data) {
     )
     return { student: student.uid }
   } catch (e) {
+    if (e.error === 'email_in_use') {
+      await addToSchool({ school, user: e.student })
+      return { student: e.student }
+    }
     return Promise.reject(e)
   }
 }

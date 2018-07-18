@@ -1,10 +1,4 @@
-const getCert = require('../../../getServiceAccount')
-const fetch = require('isomorphic-fetch')
 const admin = require('firebase-admin')
-
-const cert = getCert()
-
-// exports.firestore = admin.firestore()
 
 exports.default = (req, res, next) => {
   if (
@@ -23,7 +17,6 @@ exports.default = (req, res, next) => {
           : Promise.resolve()
       })
       .then(() => {
-        exports.firestore = admin.firestore()
         next()
       })
       .catch(e => {
@@ -43,39 +36,10 @@ exports.default = (req, res, next) => {
     .auth()
     .verifyIdToken(idToken)
     .then(decodedIdToken => {
-      maybeDeleteApp().then(() => {
-        req.uid = decodedIdToken.uid
-        const app = admin.initializeApp(
-          {
-            credential: admin.credential.cert(cert),
-            databaseAuthVariableOverride: {
-              uid: req.uid
-            }
-          },
-          'user'
-        )
-        exports.fetch = (url, data) =>
-          fetch(url, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          }).then(response => {
-            response.res = res
-            return response
-          })
-        exports.firestore = app.firestore()
-        next()
-      })
+      req.uid = decodedIdToken.uid
+      next()
     })
     .catch(error => {
       return res.status(403).send({ ok: false, error: error.message })
     })
-}
-
-function maybeDeleteApp () {
-  return admin.apps.findIndex(app => app.name === 'user') > -1
-    ? admin.app('user').delete()
-    : Promise.resolve()
 }

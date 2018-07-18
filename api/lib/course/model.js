@@ -1,6 +1,7 @@
-const { firestore } = require('../middlewares/authenticate')
 const arraySet = require('../utils/arraySet')
+const admin = require('firebase-admin')
 
+const firestore = admin.firestore()
 const coursesRef = firestore.collection('courses')
 
 exports.incrementAssigns = id => incrementAssigns(id, coursesRef, firestore)

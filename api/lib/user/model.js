@@ -1,7 +1,8 @@
-const { firestore } = require('../middlewares/authenticate')
-const usersRef = firestore.collection('users')
 const admin = require('firebase-admin')
 const Username = require('../username')
+
+const firestore = admin.firestore()
+const usersRef = firestore.collection('users')
 
 const getRef = id => usersRef.doc(id)
 exports.getRef = getRef

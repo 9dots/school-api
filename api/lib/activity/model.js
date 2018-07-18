@@ -1,5 +1,6 @@
-const { firestore } = require('../middlewares/authenticate')
+const admin = require('firebase-admin')
 
+const firestore = admin.firestore()
 const activitiesRef = firestore.collection('activities')
 
 const defaults = {

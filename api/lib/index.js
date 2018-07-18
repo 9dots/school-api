@@ -56,18 +56,18 @@ app.post('/studentSignIn', async (req, res) => {
 app.post('/googleSignIn', async (req, res) => {
   try {
     const url = oauth2Client.generateAuthUrl({
-      // 'online' (default) or 'offline' (gets refresh_token)
       access_type: 'offline',
       prompt: 'select_account',
-      // If you only need one scope you can pass it as a string
       scope: [
         'https://www.googleapis.com/auth/drive',
         'https://www.googleapis.com/auth/forms',
-        'https://www.googleapis.com/auth/plus.me'
+        'https://www.googleapis.com/auth/userinfo.email',
+        'https://www.googleapis.com/auth/userinfo.profile'
       ]
     })
     res.json({ ok: true, url })
   } catch (e) {
+    console.error(e)
     res.json({ ok: false })
   }
 })
@@ -79,6 +79,7 @@ app.get('/oauth_response', async (req, res) => {
     `${process.env.CLIENT_URL}/authhandler?token=${tokens.access_token}`
   )
   const cred = firebase.auth.GoogleAuthProvider.credential(tokens.id_token)
+
   const { user } = await firebase
     .auth()
     .signInAndRetrieveDataWithCredential(cred)
