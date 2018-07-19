@@ -20,17 +20,8 @@ const integrations = [
       `https://google-form-integration.herokuapp.com/teacher/${taskUrl}`,
     id: 2,
     events: {
-      unfurl: () => 'http://localhost:5000/api/unfurl',
-      copy: () => 'http://localhost:5000/api/copy'
-    },
-    errors: {
-      invalid_form: [
-        {
-          field: 'url',
-          message:
-            'Google Form url is invalid. Please make sure to use the edit link from the browser.'
-        }
-      ]
+      unfurl: () => 'https://google-form-integration.herokuapp.com/api/unfurl',
+      copy: () => 'https://google-form-integration.herokuapp.com/api/copy'
     }
   }
 ]

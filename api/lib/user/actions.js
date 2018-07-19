@@ -67,16 +67,14 @@ exports.assignLesson = async (data, me) => {
   const { teachers, lesson, module, user = me } = data
   try {
     const teacher = Object.keys(teachers)[0]
-    const {
-      tokens: { access_token }
-    } = await Auth.getAccessToken(null, teacher)
+    const { tokens } = await Auth.getAccessToken(null, teacher)
     const { lessons } = await Module.get(module)
     const activities = await Activity.getActivities({
       ...data,
       lesson: lessons.find(l => l.id === lesson),
       teachers,
       user
-    }).then(activities => getInstances(activities, access_token))
+    }).then(activities => getInstances(activities, tokens))
     return Activity.createBatch(activities)
   } catch (e) {
     return Promise.reject({ error: e.message })
