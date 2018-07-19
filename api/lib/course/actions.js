@@ -1,6 +1,7 @@
 const integrations = require('../../../integrations')
 const reorderCourse = require('../utils/reorder')
 const arraySet = require('../utils/arraySet')
+const fetch = require('isomorphic-fetch')
 const uuidv1 = require('uuid/v1')
 const Course = require('./model')
 const Auth = require('../auth')
@@ -77,16 +78,26 @@ exports.removeLesson = ({ course, draft, lesson }) =>
 /**
  * Task
  */
-exports.addTask = async ({ course, draft, lesson, url }, user) => {
+exports.addTask = async ({ course, draft, lesson, url }, user, req) => {
   const int = integrations.find(int => int.pattern.match(url))
   const {
-    tokens: { access_token }
+    tokens: { access_token, id_token }
   } = await Auth.getAccessToken(null, user)
   if (int && int.events && int.events.unfurl) {
-    const { ok, tasks, error, errorDetails } = await int.events.unfurl({
-      taskUrl: url,
-      access_token
-    })
+    const { ok, tasks, error, errorDetails } = await fetch(
+      int.events.unfurl(),
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + id_token
+        },
+        body: JSON.stringify({
+          taskUrl: url,
+          access_token
+        })
+      }
+    ).then(res => res.json())
     if (!ok) return Promise.reject({ error, errorDetails })
     return updateLesson(tasks)
   }
@@ -99,7 +110,7 @@ exports.addTask = async ({ course, draft, lesson, url }, user) => {
         tasks.map((t, i) => {
           const update = {
             ...t,
-            index: i,
+            index: (l.tasks || []).length + i,
             id: uuidv1()
           }
           if (t.displayName) {

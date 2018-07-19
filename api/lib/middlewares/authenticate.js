@@ -1,4 +1,5 @@
 const admin = require('firebase-admin')
+const fetch = require('isomorphic-fetch')
 
 exports.default = (req, res, next) => {
   if (

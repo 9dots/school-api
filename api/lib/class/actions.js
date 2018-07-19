@@ -74,12 +74,13 @@ exports.assignLesson = async (data, user) => {
     )
     getInstances(
       activities.reduce((acc, act) => acc.concat(...act), []),
-      tokens.access_token
+      tokens
     ).then(Activity.createBatch)
     return Class.update(cls, {
       assignedLesson: { id: lesson, module }
     })
   } catch (e) {
+    console.error(e)
     return Promise.reject(e)
   }
 }

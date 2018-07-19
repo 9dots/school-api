@@ -35,7 +35,7 @@ app.use('/api/:method', authenticate, checkMethod, validate)
 app.post('/api/:method', async (req, res) => {
   const { action, body, uid } = req
   try {
-    const val = await action(body, uid, res)
+    const val = await action(body, uid, req)
     res.send({ ok: true, ...(val || {}) })
   } catch (e) {
     res.send({ ok: false, ...e })

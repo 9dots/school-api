@@ -1,6 +1,7 @@
 const Course = require('../course')
 const Module = require('./model')
 const uuid = require('uuid/v1')
+const omit = require('@f/omit')
 
 exports.get = Module.get
 exports.create = Module.create
@@ -28,7 +29,7 @@ exports.createCopy = async ({ course, class: cls }) => {
 
 function getCourseData (mod, course, cls) {
   return {
-    ...mod,
+    ...omit('id', mod),
     class: cls,
     lessons: addTaskIds(mod),
     course: {

@@ -1,14 +1,18 @@
 const integrations = require('../../../integrations')
 const mapValues = require('@f/map-values')
+const fetch = require('isomorphic-fetch')
 const arraySet = require('./arraySet')
 
-module.exports = (activities, access_token = '') =>
+module.exports = (activities, tokens) =>
   Promise.all(
     mapValues((data, int) => {
-      const copy = integrations.find(
-        integration => integration.id === Number(int)
-      ).events.copy
-      return copy({ tasks: data, access_token })
+      const url = integrations
+        .find(integration => integration.id === Number(int))
+        .events.copy()
+      return copy(url, tokens.id_token, {
+        tasks: data,
+        access_token: tokens.access_token
+      })
     }, getIntegrations(activities))
   )
     .then(res => res.reduce((acc, tasks) => acc.concat(tasks.instances), []))
@@ -28,6 +32,7 @@ module.exports = (activities, access_token = '') =>
         })
       }, activities)
     })
+    .catch(console.error)
 
 function getIntegrations (activities) {
   try {
@@ -44,4 +49,15 @@ function getIntegrations (activities) {
   } catch (e) {
     return {}
   }
+}
+
+function copy (url, idToken, body) {
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + idToken
+    },
+    body: JSON.stringify(body)
+  }).then(res => res.json())
 }

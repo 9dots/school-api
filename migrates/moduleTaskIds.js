@@ -8,11 +8,11 @@ admin.initializeApp({ credential: admin.credential.cert(cert) })
 const firestore = admin.firestore()
 const modulesRef = firestore.collection('modules')
 
-migrateUsernames()
+addModuleTaskIds()
   .then(() => console.log('done'))
   .catch(console.error)
 
-async function migrateUsernames () {
+async function addModuleTaskIds () {
   const batch = admin.firestore().batch()
   const modules = await getModules()
   const transformed = modules.map(transformModules)
