@@ -76,9 +76,17 @@ exports.assignLesson = async (data, user) => {
       activities.reduce((acc, act) => acc.concat(...act), []),
       tokens
     ).then(Activity.createBatch)
-    return Class.update(cls, {
-      assignedLesson: { id: lesson, module }
-    })
+    return Promise.all([
+      Class.update(cls, {
+        assignedLesson: { id: lesson, module }
+      }),
+      Module.initializeLessonProgress({
+        module,
+        lesson,
+        tasks: lessonData.tasks,
+        students
+      })
+    ])
   } catch (e) {
     console.error(e)
     return Promise.reject(e)

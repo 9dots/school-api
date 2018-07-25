@@ -3,9 +3,18 @@ const getServiceAccount = require('./getServiceAccount')
 const cert = getServiceAccount('dev')
 const sleep = require('@f/sleep')
 
-const firebase = admin.initializeApp({
+admin.initializeApp({
   credential: admin.credential.cert(cert)
 })
+
+// firebase
+//   .firestore()
+//   .collection('modules')
+//   .doc('SwHgwn58V8p3PIDkoCeV')
+//   .collection('progress')
+//   .doc('c9ddc620-8ecb-11e8-a882-efdfa88863b2')
+//   .get()
+//   .then(snap => console.log(sizeOf(snap.data())))
 
 async function deleteAllUsers () {
   try {

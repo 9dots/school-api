@@ -1,7 +1,6 @@
+const { getCourseData, getProgressMap } = require('./utils')
 const Course = require('../course')
 const Module = require('./model')
-const uuid = require('uuid/v1')
-const omit = require('@f/omit')
 
 exports.get = Module.get
 exports.create = Module.create
@@ -27,21 +26,26 @@ exports.createCopy = async ({ course, class: cls }) => {
   }
 }
 
-function getCourseData (mod, course, cls) {
-  return {
-    ...omit('id', mod),
-    class: cls,
-    lessons: addTaskIds(mod),
-    course: {
-      ref: course,
-      version: mod.version || 0
-    }
-  }
-}
+// Progress
 
-function addTaskIds (course) {
-  return course.lessons.map(l => ({
-    ...l,
-    tasks: l.tasks.map(t => ({ ...t, uuid: uuid() }))
-  }))
+exports.updateProgress = Module.updateProgress
+exports.getProgressRef = Module.getProgressRef
+exports.initializeLessonProgress = async data => {
+  const { module, lesson, tasks, students } = data
+  const batch = Module.fsBatch()
+  await Promise.all(
+    Object.keys(students).map(async student => {
+      const progress = (await Module.getProgress(module, lesson, student)) || {}
+      return Module.setProgress(
+        module,
+        lesson,
+        student,
+        getProgressMap(tasks, progress),
+        {
+          batch
+        }
+      )
+    })
+  )
+  return batch.commit()
 }
