@@ -1,7 +1,6 @@
 const integrations = require('../../../integrations')
 const Activity = require('./model')
 const Module = require('../module')
-const User = require('../user')
 const omit = require('@f/omit')
 const uuidv1 = require('uuid/v1')
 
@@ -23,33 +22,6 @@ exports.externalUpdate = async ({ id, ...data }) => {
   } catch (e) {
     console.error(id, e)
     Promise.reject('could_not_update')
-  }
-}
-exports.setActive = async ({ activity, lesson }, user) => {
-  const active = await Activity.findActive(user, lesson)
-  const activityData = await Activity.get(activity)
-  try {
-    const batch = Activity.batch()
-    active.forEach(active =>
-      batch.update(Activity.getRef(active), { active: false })
-    )
-    batch.update(Activity.getRef(activity), { active: true, started: true })
-    Module.updateProgress(
-      activityData.module,
-      lesson,
-      user,
-      {
-        [activityData.task]: {
-          active: true,
-          started: true
-        }
-      },
-      { batch }
-    )
-    batch.update(User.getRef(user), { activeTask: activityData })
-    return batch.commit()
-  } catch (e) {
-    return Promise.reject(e)
   }
 }
 exports.maybeSetCompleted = async ({ activity }, me) => {

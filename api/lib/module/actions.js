@@ -1,6 +1,7 @@
 const { getCourseData, getProgressMap } = require('./utils')
 const Course = require('../course')
 const Module = require('./model')
+const User = require('../user')
 
 exports.get = Module.get
 exports.create = Module.create
@@ -30,22 +31,37 @@ exports.createCopy = async ({ course, class: cls }) => {
 
 exports.updateProgress = Module.updateProgress
 exports.getProgressRef = Module.getProgressRef
+exports.setActive = async ({ module, lesson, user, activity }, me) => {
+  const batch = Module.fsBatch()
+  const thisUser = user || me
+  Module.setActive(module, lesson, thisUser, activity.task, { batch })
+  batch.update(User.getRef(thisUser), { activeTask: activity })
+  return batch.commit()
+}
 exports.initializeLessonProgress = async data => {
   const { module, lesson, tasks, students } = data
   const batch = Module.fsBatch()
-  await Promise.all(
-    Object.keys(students).map(async student => {
-      const progress = (await Module.getProgress(module, lesson, student)) || {}
-      return Module.setProgress(
-        module,
-        lesson,
-        student,
-        getProgressMap(tasks, progress),
-        {
-          batch
+  try {
+    await Promise.all(
+      Object.keys(students).map(async student => {
+        const progress = await Module.getProgress(module, lesson, student)
+        if (!progress) {
+          Module.setActive(module, lesson, student, tasks[0].id, { batch })
         }
-      )
-    })
-  )
-  return batch.commit()
+        return Module.updateProgress(
+          module,
+          lesson,
+          student,
+          getProgressMap(tasks, progress),
+          {
+            batch
+          }
+        )
+      })
+    )
+    return batch.commit()
+  } catch (e) {
+    console.error(e)
+    return Promise.reject(e)
+  }
 }

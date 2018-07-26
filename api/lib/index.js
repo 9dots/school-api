@@ -38,6 +38,7 @@ app.post('/api/:method', async (req, res) => {
     const val = await action(body, uid, req)
     res.send({ ok: true, ...(val || {}) })
   } catch (e) {
+    console.error(e)
     res.send({ ok: false, ...e })
   }
 })

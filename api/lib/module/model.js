@@ -33,18 +33,28 @@ exports.getProgress = (id, lesson, user) =>
   exports
     .getProgressRef(id, lesson, user)
     .get()
-    .then(snap => (snap.exists ? snap.data() : null))
-exports.setProgress = (id, lesson, user, data, { batch }) => {
+    .then(snap => (snap.exists ? snap.data() : undefined))
+exports.setProgress = (id, lesson, user, data, opts = {}) => {
   const ref = exports.getProgressRef(id, lesson, user)
+  const { batch } = opts
   if (batch) {
     return batch.set(ref, data, { merge: true })
   }
   return ref.set(data, { merge: true })
 }
-exports.updateProgress = (id, lesson, user, data, { batch }) => {
+exports.setActive = (id, lesson, user, task, opts = {}) => {
   const ref = exports.getProgressRef(id, lesson, user)
+  const { batch } = opts
   if (batch) {
-    return batch.set(ref, data, { merge: true })
+    return batch.set(ref, { active: task }, { merge: true })
   }
-  return ref.set(data, { merge: true })
+  return ref.set({ active: task }, { merge: true })
+}
+exports.updateProgress = (id, lesson, user, data, opts = {}) => {
+  const ref = exports.getProgressRef(id, lesson, user)
+  const { batch } = opts
+  if (batch) {
+    return batch.set(ref, { tasks: data }, { merge: true })
+  }
+  return ref.set({ tasks: data }, { merge: true })
 }

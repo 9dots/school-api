@@ -20,12 +20,11 @@ function addTaskIds (course) {
   }))
 }
 
-function getProgressMap (tasks, progress) {
+function getProgressMap (tasks, progress = {}) {
   return tasks.reduce(
     (acc, task) => ({
       ...acc,
       [task.id]: progress[task.id] || {
-        score: null,
         progress: 0,
         completed: false,
         started: false
