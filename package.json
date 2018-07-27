@@ -58,7 +58,7 @@
     "object-sizeof": "^1.2.0",
     "path-to-regexp": "^2.2.1",
     "request": "^2.86.0",
-    "school-schema": "^0.2.9",
+    "school-schema": "^0.2.11",
     "shoe": "^0.0.15",
     "url-pattern": "^1.0.3",
     "uuid": "^3.2.1"
