@@ -52,7 +52,7 @@ exports.initializeLessonProgress = async data => {
           module,
           lesson,
           student,
-          getProgressMap(tasks, progress),
+          getProgressMap(tasks, progress.tasks),
           {
             batch
           }
