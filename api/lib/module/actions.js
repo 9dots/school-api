@@ -1,10 +1,18 @@
 const { getCourseData, getProgressMap } = require('./utils')
+const integrations = require('../../../integrations')
 const Course = require('../course')
 const Module = require('./model')
 const User = require('../user')
 
 exports.get = Module.get
 exports.create = Module.create
+exports.getTaskTeacherView = async ({ task }) => {
+  const int = integrations.find(int => int.pattern.match(task.url)) || {}
+  if (int && int.teacherView) {
+    return { teacherView: int.teacherView(task.uuid) }
+  }
+  return { teacherView: null }
+}
 exports.updateCourse = async ({ course, courseData }) => {
   try {
     const modules = await Module.getByCourse(course)
@@ -52,7 +60,7 @@ exports.initializeLessonProgress = async data => {
           module,
           lesson,
           student,
-          getProgressMap(tasks, progress.tasks),
+          getProgressMap(tasks, (progress || {}).tasks),
           {
             batch
           }
