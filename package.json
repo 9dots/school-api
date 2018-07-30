@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production api/lib/index.js",
+    "start": "cross-env NODE_ENV=production node_modules/.bin/forever api/lib/index.js",
     "prestart": "./node_modules/.bin/sync",
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config api/lib/index.js",
     "test-schema": "tape schema/**/test.js"
@@ -52,6 +52,7 @@
     "express": "^4.16.2",
     "firebase": "^4.8.0",
     "firebase-admin": "^5.7.0",
+    "forever": "^0.15.3",
     "googleapis": "^32.0.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.10",
