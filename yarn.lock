@@ -649,9 +649,9 @@
   version "8.10.13"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.13.tgz#786153acbe3e8e0b844053e72c9d9f2db71c796a"
 
-"@weo-edu/schema@https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd":
+"@weo-edu/schema@git+https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd":
   version "0.1.10"
-  resolved "https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
+  resolved "git+https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
   dependencies:
     "@f/clone-shallow" "^1.1.3"
     component-inherit "0.0.3"
@@ -659,9 +659,9 @@
     object-assign "^3.0.0"
     sliced "0.0.5"
 
-"@weo-edu/validate@https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6":
+"@weo-edu/validate@git+https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6":
   version "2.12.5"
-  resolved "https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6"
+  resolved "git+https://github.com/danleavitt0/validate.git#80e274cfb7fb428c2a14f9114275a540081474e6"
   dependencies:
     generate-function "^2.0.0"
     generate-object-property "^1.1.0"
@@ -6119,9 +6119,9 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-school-schema@^0.2.11:
-  version "0.2.11"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.2.11.tgz#030168db23c039f631b3c9b08617d0f34b631a1e"
+school-schema@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.2.14.tgz#fc8a2bf0d92ed9e37aa7682ac6759c5de72c1b2a"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/schema" "https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"
