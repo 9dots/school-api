@@ -5,7 +5,7 @@ const omit = require('@f/omit')
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  `${process.env.HEROKU_URL}/oauth_response`
+  `${process.env.API_URL}/oauth_response`
 )
 
 exports.getAccessToken = async (_, user) => {
