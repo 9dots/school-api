@@ -6119,9 +6119,9 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-school-schema@^0.2.9:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.2.9.tgz#9e9c77b4dac3a9d04e6df1a9c5d7e80c5b9b8f5c"
+school-schema@^0.2.11:
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/school-schema/-/school-schema-0.2.11.tgz#030168db23c039f631b3c9b08617d0f34b631a1e"
   dependencies:
     "@f/map" "^1.5.3"
     "@weo-edu/schema" "https://github.com/danleavitt0/schema.git#e873030634f916f9ae0639eaccaf1bcda65c15bd"

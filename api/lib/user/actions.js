@@ -23,6 +23,12 @@ exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
     nav: cls
   })
+
+exports.setTermsVersion = ({ version }, me) =>
+  User.update(me, {
+    termsVersion: version
+  })
+
 exports.setInsecurePassword = ({ user, password, type }) =>
   User.update(user, {
     [`passwords.${type}`]: password || getRandomPassword(type)
