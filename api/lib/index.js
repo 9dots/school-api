@@ -13,7 +13,7 @@ const cert = getCert()
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  `${process.env.HEROKU_URL}/oauth_response`
+  `${process.env.API_URL}/oauth_response`
 )
 
 const app = express()
@@ -91,4 +91,6 @@ app.get('/oauth_response', async (req, res) => {
     .set(tokens, { merge: true })
 })
 
-app.listen(process.env.PORT || 8000)
+app.listen(process.env.PORT || 8000, () =>
+  console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
+)

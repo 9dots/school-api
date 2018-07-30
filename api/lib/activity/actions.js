@@ -6,7 +6,7 @@ const uuidv1 = require('uuid/v1')
 
 const API_URL =
   process.env.NODE_ENV === 'production'
-    ? process.env.HEROKU_URL
+    ? process.env.API_URL
     : 'http://localhost:8000'
 
 exports.update = Activity.update
