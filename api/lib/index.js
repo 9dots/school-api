@@ -10,6 +10,8 @@ const express = require('express')
 const cors = require('cors')()
 const cert = getCert()
 
+console.log(process.env.GCLOUD_PROJECT)
+
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,

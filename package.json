@@ -8,8 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_ENV=production node_modules/.bin/forever api/lib/index.js",
-    "prestart": "node -r dotenv/config ./node_modules/.bin/sync",
+    "start": "cross-env NODE_ENV=production api/lib/index.js",
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config api/lib/index.js",
     "test-schema": "tape schema/**/test.js"
   },
