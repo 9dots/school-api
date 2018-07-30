@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production node_modules/.bin/forever api/lib/index.js",
-    "prestart": "./node_modules/.bin/sync",
+    "prestart": "node -r dotenv/config ./node_modules/.bin/sync",
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config api/lib/index.js",
     "test-schema": "tape schema/**/test.js"
   },
