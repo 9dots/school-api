@@ -85,13 +85,16 @@ app.get('/oauth_response', async (req, res) => {
     .set(tokens, { merge: true })
 })
 
-app.get('/_ah/warmup', initializeApp)
+app.get('/_ah/warmup', (_, res) => {
+  initializeApp()
+  return res.json({ ok: true })
+})
 
 app.listen(process.env.PORT || 8000, () =>
   console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
 )
 
-function initializeApp () {
+function initializeApp (res) {
   try {
     admin.initializeApp({
       credential: admin.credential.cert(cert),
@@ -102,8 +105,9 @@ function initializeApp () {
       apiKey: process.env.API_KEY,
       databaseURL: process.env.FB_DATABASE_URL
     })
-    integrations
-      .filter(int => !!int.events.warmpup)
-      .map(int => fetch(int.events.warmpup()))
+    integrations.filter(int => !!int.events.warmpup).map(int => {
+      console.log('warmup')
+      return fetch(int.events.warmpup())
+    })
   } catch (e) {}
 }
