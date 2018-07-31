@@ -57,13 +57,17 @@ exports.addStudents = async ({ class: cls, students }) => {
 
 exports.assignLesson = async (data, user) => {
   try {
-    const { tokens } = await Auth.getAccessToken(null, user)
-    const { class: cls, lesson, module } = data
+    const { class: cls, lesson, module, student } = data
     const { students = {}, teachers } = await Class.get(cls)
+    const { tokens } = await Auth.getAccessToken(
+      null,
+      student ? Object.keys(teachers)[0] : user
+    )
     const { lessons } = await Module.get(module)
     const lessonData = lessons.find(l => l.id === lesson)
+    const assignTo = student ? { [student]: true } : students
     const activities = await Promise.all(
-      Object.keys(students).map((student, i) =>
+      Object.keys(assignTo).map((student, i) =>
         Activity.getActivities({
           ...data,
           lesson: lessonData,
@@ -75,10 +79,22 @@ exports.assignLesson = async (data, user) => {
     getInstances(
       activities.reduce((acc, act) => acc.concat(...act), []),
       tokens
-    ).then(Activity.createBatch)
-    return Class.update(cls, {
-      assignedLesson: { id: lesson, module }
-    })
+    )
+      .then(Activity.createBatch)
+      .catch(console.error)
+    return Promise.all([
+      !student &&
+        Class.update(cls, {
+          assignedLesson: { id: lesson, module }
+        }),
+      Module.initializeLessonProgress({
+        module,
+        lesson,
+        tasks: lessonData.tasks,
+        students: assignTo,
+        activities
+      })
+    ])
   } catch (e) {
     console.error(e)
     return Promise.reject(e)

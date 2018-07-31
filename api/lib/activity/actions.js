@@ -1,11 +1,12 @@
 const integrations = require('../../../integrations')
 const Activity = require('./model')
+const Module = require('../module')
 const omit = require('@f/omit')
 const uuidv1 = require('uuid/v1')
 
 const API_URL =
   process.env.NODE_ENV === 'production'
-    ? process.env.HEROKU_URL
+    ? process.env.API_URL
     : 'http://localhost:8000'
 
 exports.update = Activity.update
@@ -13,29 +14,29 @@ exports.getActivity = getActivity
 exports.createBatch = Activity.createBatch
 exports.externalUpdate = async ({ id, ...data }) => {
   try {
-    await Activity.update(id, data)
-    return
+    const batch = Activity.batch()
+    const { task, module, lesson, user } = await Activity.get(id)
+    batch.update(Activity.getRef(id), data)
+    Module.updateProgress(module, lesson, user, { [task]: data }, { batch })
+    return batch.commit()
   } catch (e) {
     console.error(id, e)
     Promise.reject('could_not_update')
   }
 }
-exports.setActive = async ({ activity, lesson }, user) => {
-  const active = await Activity.findActive(user, lesson)
-  const batch = Activity.batch()
-  active.forEach(active =>
-    batch.update(Activity.getRef(active), { active: false })
-  )
-  batch.update(Activity.getRef(activity), { active: true, started: true })
-  return batch.commit()
-}
 exports.maybeSetCompleted = async ({ activity }, me) => {
   try {
-    const { url, student } = await Activity.get(activity)
+    const batch = Activity.batch()
+    const { url, student, module, task, lesson } = await Activity.get(activity)
     const int = integrations.find(int => int.pattern.match(url))
+    const data = {
+      progress: 100,
+      completed: true
+    }
     if (!int && student === me) {
-      await Activity.update(activity, { progress: 100, completed: true })
-      return
+      batch.update(Activity.getRef(activity), data)
+      Module.updateProgress(module, lesson, me, { [task]: data }, { batch })
+      return batch.commit()
     }
   } catch (e) {
     return Promise.reject(e)

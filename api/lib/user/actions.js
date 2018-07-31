@@ -1,8 +1,8 @@
-const getInstances = require('../utils/getInstances')
+// const getInstances = require('../utils/getInstances')
 const { getRandomPassword } = require('./utils')
-const Activity = require('../activity')
+// const Activity = require('../activity')
 const Username = require('../username')
-const Module = require('../module')
+// const Module = require('../module')
 const Auth = require('../auth')
 const User = require('./model')
 
@@ -23,6 +23,12 @@ exports.setNav = ({ class: cls }, me) =>
   User.update(me, {
     nav: cls
   })
+
+exports.setTermsVersion = ({ version }, me) =>
+  User.update(me, {
+    termsVersion: version
+  })
+
 exports.setInsecurePassword = ({ user, password, type }) =>
   User.update(user, {
     [`passwords.${type}`]: password || getRandomPassword(type)
@@ -63,25 +69,23 @@ exports.createStudents = async data => {
   )
   return { add: res }
 }
-exports.assignLesson = async (data, me) => {
-  const { teachers, lesson, module, user = me } = data
-  try {
-    const teacher = Object.keys(teachers)[0]
-    const {
-      tokens: { access_token }
-    } = await Auth.getAccessToken(null, teacher)
-    const { lessons } = await Module.get(module)
-    const activities = await Activity.getActivities({
-      ...data,
-      lesson: lessons.find(l => l.id === lesson),
-      teachers,
-      user
-    }).then(activities => getInstances(activities, access_token))
-    return Activity.createBatch(activities)
-  } catch (e) {
-    return Promise.reject({ error: e.message })
-  }
-}
+// exports.assignLesson = async (data, me) => {
+//   const { teachers, lesson, module, user = me } = data
+//   try {
+//     const teacher = Object.keys(teachers)[0]
+//     const { tokens } = await Auth.getAccessToken(null, teacher)
+//     const { lessons } = await Module.get(module)
+//     const activities = await Activity.getActivities({
+//       ...data,
+//       lesson: lessons.find(l => l.id === lesson),
+//       teachers,
+//       user
+//     }).then(activities => getInstances(activities, tokens))
+//     return Activity.createBatch(activities)
+//   } catch (e) {
+//     return Promise.reject({ error: e.message })
+//   }
+// }
 exports.signInWithPassword = async ({ user, type, password: attempt }) => {
   try {
     const { passwords } = await User.get(user)

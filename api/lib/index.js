@@ -13,7 +13,7 @@ const cert = getCert()
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  `${process.env.HEROKU_URL}/oauth_response`
+  `${process.env.API_URL}/oauth_response`
 )
 
 const app = express()
@@ -38,6 +38,7 @@ app.post('/api/:method', async (req, res) => {
     const val = await action(body, uid, req)
     res.send({ ok: true, ...(val || {}) })
   } catch (e) {
+    console.error(e)
     res.send({ ok: false, ...e })
   }
 })
@@ -90,4 +91,22 @@ app.get('/oauth_response', async (req, res) => {
     .set(tokens, { merge: true })
 })
 
-app.listen(process.env.PORT || 8000)
+app.get('/_ah/warmup', (req, res) => {
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(cert),
+      databaseURL: process.env.FB_DATABASE_URL
+    })
+
+    firebase.initializeApp({
+      apiKey: process.env.API_KEY,
+      databaseURL: process.env.FB_DATABASE_URL
+    })
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+app.listen(process.env.PORT || 8000, () =>
+  console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
+)
