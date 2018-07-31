@@ -91,6 +91,22 @@ app.get('/oauth_response', async (req, res) => {
     .set(tokens, { merge: true })
 })
 
+app.get('/_ah/warmup', (req, res) => {
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(cert),
+      databaseURL: process.env.FB_DATABASE_URL
+    })
+
+    firebase.initializeApp({
+      apiKey: process.env.API_KEY,
+      databaseURL: process.env.FB_DATABASE_URL
+    })
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 app.listen(process.env.PORT || 8000, () =>
   console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
 )
