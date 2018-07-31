@@ -2,6 +2,8 @@ const authenticate = require('./middlewares/authenticate').default
 const checkMethod = require('./middlewares/checkMethod')
 const getCert = require('../../getServiceAccount')
 const validate = require('./middlewares/validate')
+const integrations = require('../../integrations')
+const fetch = require('isomorphic-fetch')
 const bodyParser = require('body-parser')
 const { google } = require('googleapis')
 const admin = require('firebase-admin')
@@ -102,6 +104,9 @@ app.get('/_ah/warmup', (req, res) => {
       apiKey: process.env.API_KEY,
       databaseURL: process.env.FB_DATABASE_URL
     })
+    integrations
+      .filter(int => int.events.warmpup)
+      .map(int => fetch(int.events.warmpup()))
   } catch (e) {
     console.error(e)
   }

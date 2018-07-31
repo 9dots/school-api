@@ -7,6 +7,7 @@ const integrations = [
     copyPerStudent: true,
     id: 1,
     events: {
+      warmpup: () => 'https://www.pixelbots.io/api/keepAlive',
       unfurl: () => 'https://www.pixelbots.io/api/unfurl',
       copy: () => 'https://www.pixelbots.io/api/copy'
     }
@@ -20,6 +21,7 @@ const integrations = [
       `https://forms-dot-school-5927d.appspot.com/teacher/${taskUrl}`,
     id: 2,
     events: {
+      warmup: () => 'https://forms-dot-school-5927d.appspot.com',
       unfurl: () => 'https://forms-dot-school-5927d.appspot.com/api/unfurl',
       copy: () => 'https://forms-dot-school-5927d.appspot.com/api/copy'
     }
