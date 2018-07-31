@@ -19,15 +19,7 @@ const oauth2Client = new google.auth.OAuth2(
 )
 
 const app = express()
-admin.initializeApp({
-  credential: admin.credential.cert(cert),
-  databaseURL: process.env.FB_DATABASE_URL
-})
-
-firebase.initializeApp({
-  apiKey: process.env.API_KEY,
-  databaseURL: process.env.FB_DATABASE_URL
-})
+initializeApp()
 
 app.use(bodyParser.json())
 app.use(cors)
@@ -93,7 +85,14 @@ app.get('/oauth_response', async (req, res) => {
     .set(tokens, { merge: true })
 })
 
-app.get('/_ah/warmup', (req, res) => {
+app.get('/_ah/warmup', initializeApp)
+app.get('/_ah/start', initializeApp)
+
+app.listen(process.env.PORT || 8000, () =>
+  console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
+)
+
+function initializeApp () {
   try {
     admin.initializeApp({
       credential: admin.credential.cert(cert),
@@ -110,8 +109,4 @@ app.get('/_ah/warmup', (req, res) => {
   } catch (e) {
     console.error(e)
   }
-})
-
-app.listen(process.env.PORT || 8000, () =>
-  console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
-)
+}
