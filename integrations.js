@@ -17,11 +17,11 @@ const integrations = [
     classCopy: true,
     copyPerStudent: true,
     teacherView: taskUrl =>
-      `https://google-form-integration.herokuapp.com/teacher/${taskUrl}`,
+      `https://forms-dot-school-5927d.appspot.com/teacher/${taskUrl}`,
     id: 2,
     events: {
-      unfurl: () => 'https://google-form-integration.herokuapp.com/api/unfurl',
-      copy: () => 'https://google-form-integration.herokuapp.com/api/copy'
+      unfurl: () => 'https://forms-dot-school-5927d.appspot.com/api/unfurl',
+      copy: () => 'https://forms-dot-school-5927d.appspot.com/api/copy'
     }
   }
 ]
