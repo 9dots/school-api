@@ -86,7 +86,6 @@ app.get('/oauth_response', async (req, res) => {
 })
 
 app.get('/_ah/warmup', initializeApp)
-app.get('/_ah/start', initializeApp)
 
 app.listen(process.env.PORT || 8000, () =>
   console.log('Server up: Listening on port: ' + (process.env.PORT || 8000))
@@ -104,9 +103,7 @@ function initializeApp () {
       databaseURL: process.env.FB_DATABASE_URL
     })
     integrations
-      .filter(int => int.events.warmpup)
+      .filter(int => !!int.events.warmpup)
       .map(int => fetch(int.events.warmpup()))
-  } catch (e) {
-    console.error(e)
-  }
+  } catch (e) {}
 }
