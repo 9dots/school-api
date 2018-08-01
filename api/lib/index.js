@@ -105,6 +105,8 @@ function initializeApp (res) {
       apiKey: process.env.API_KEY,
       databaseURL: process.env.FB_DATABASE_URL
     })
+    const firestore = firebase.firestore()
+    firestore.settings({ timestampsInSnapshots: true })
     integrations.filter(int => !!int.events.warmup).map(int => {
       return fetch(int.events.warmup())
     })
