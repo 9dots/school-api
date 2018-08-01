@@ -1,9 +1,5 @@
-// const getInstances = require('../utils/getInstances')
 const { getRandomPassword } = require('./utils')
-// const Activity = require('../activity')
 const Username = require('../username')
-// const Module = require('../module')
-const Auth = require('../auth')
 const User = require('./model')
 
 exports.get = User.get
@@ -19,10 +15,12 @@ exports.teacherSignUp = async ({ school, teacher, email, ...additional }) => {
   })
 }
 exports.addToSchool = addToSchool
-exports.setNav = ({ class: cls }, me) =>
-  User.update(me, {
-    nav: cls
-  })
+exports.setNav = ({ class: cls, batch }, me) =>
+  batch
+    ? batch.update(User.getRef(me), { nav: cls })
+    : User.update(me, {
+      nav: cls
+    })
 
 exports.setTermsVersion = ({ version }, me) =>
   User.update(me, {
@@ -69,23 +67,6 @@ exports.createStudents = async data => {
   )
   return { add: res }
 }
-// exports.assignLesson = async (data, me) => {
-//   const { teachers, lesson, module, user = me } = data
-//   try {
-//     const teacher = Object.keys(teachers)[0]
-//     const { tokens } = await Auth.getAccessToken(null, teacher)
-//     const { lessons } = await Module.get(module)
-//     const activities = await Activity.getActivities({
-//       ...data,
-//       lesson: lessons.find(l => l.id === lesson),
-//       teachers,
-//       user
-//     }).then(activities => getInstances(activities, tokens))
-//     return Activity.createBatch(activities)
-//   } catch (e) {
-//     return Promise.reject({ error: e.message })
-//   }
-// }
 exports.signInWithPassword = async ({ user, type, password: attempt }) => {
   try {
     const { passwords } = await User.get(user)
@@ -143,7 +124,6 @@ function getStudentObject (data) {
   const { role = 'student', displayName, username, school, email, name } = data
   return {
     schools: { [school]: true },
-    'nav.school': school,
     email: email || null,
     displayName,
     username,

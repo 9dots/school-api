@@ -46,10 +46,11 @@ exports.removeStudents = async ({ class: cls, students }) => {
 exports.addStudents = async ({ class: cls, students }) => {
   const classRef = Class.getRef(cls)
   const { passwordType } = await Class.get(cls)
-  const batch = students.reduce(
-    (acc, student) => acc.update(classRef, addUser(student, 'student')),
-    Class.createBatch()
-  )
+  const batch = students.reduce((acc, student) => {
+    acc.update(classRef, addUser(student, 'student'))
+    User.setNav({ class: cls, batch: acc }, student)
+    return acc
+  }, Class.createBatch())
   await batch.commit()
   setPasswordType({ class: cls, passwordType })
   return {}
