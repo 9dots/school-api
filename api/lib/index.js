@@ -105,9 +105,8 @@ function initializeApp (res) {
       apiKey: process.env.API_KEY,
       databaseURL: process.env.FB_DATABASE_URL
     })
-    integrations.filter(int => !!int.events.warmpup).map(int => {
-      console.log('warmup')
-      return fetch(int.events.warmpup())
+    integrations.filter(int => !!int.events.warmup).map(int => {
+      return fetch(int.events.warmup())
     })
   } catch (e) {}
 }

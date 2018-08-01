@@ -1,35 +1,58 @@
 const admin = require('firebase-admin')
 const getServiceAccount = require('./getServiceAccount')
-const cert = getServiceAccount('dev')
+const cert = getServiceAccount('production')
 const sleep = require('@f/sleep')
 
 admin.initializeApp({
   credential: admin.credential.cert(cert)
 })
 
-// firebase
-//   .firestore()
-//   .collection('modules')
-//   .doc('SwHgwn58V8p3PIDkoCeV')
-//   .collection('progress')
-//   .doc('c9ddc620-8ecb-11e8-a882-efdfa88863b2')
-//   .get()
-//   .then(snap => console.log(sizeOf(snap.data())))
+const usersCol = admin.firestore().collection('users')
 
-async function deleteAllUsers () {
-  try {
-    const { users } = await admin.auth().listUsers(1000)
-    return Promise.all(
-      users.map((user, i) =>
-        sleep(i * 100).then(() => admin.auth().deleteUser(user.uid))
-      )
+const keepUsers = [
+  'SxO05KbXVAOh2JCYt0QCPH4dJ1K2',
+  'jLUT5t5EyQVtNtDjcdKrYdZR5Vk1'
+]
+
+const localKeepUsers = [
+  '6DgXDNV2xQVrknL28eT3FnS8anC2',
+  'cKgLuM1s6qStdVxVooO8qv8lego1'
+]
+
+async function deleteUsersCollection () {
+  const users = await usersCol.get().then(snap => snap.docs.map(doc => doc.id))
+  return Promise.all(
+    users.map(
+      user =>
+        keepUsers.indexOf(user) === -1
+          ? usersCol.doc(user).delete()
+          : Promise.resolve()
     )
-  } catch (e) {
-    console.error(e)
-  }
+  )
 }
 
-deleteAllUsers().then(() => console.log('done'))
+// async function deleteAllUsers () {
+//   try {
+//     const { users } = await admin.auth().listUsers(1000)
+//     return Promise.all(
+//       users.map(
+//         (user, i) =>
+//           keepUsers.indexOf(user.uid) === -1
+//             ? sleep(i * 150).then(() =>
+//               admin
+//                 .auth()
+//                 .deleteUser(user.uid)
+//                 .then(() => usersCol.doc(user.uid).delete())
+//             )
+//             : Promise.resolve()
+//       )
+//     )
+//   } catch (e) {
+//     console.error(e)
+//   }
+// }
+deleteUsersCollection().then(() => console.log('done'))
+// deleteAllUsers().then(() => console.log('done'))
 
 // function getServiceAccount () {
 //   try {
